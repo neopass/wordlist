@@ -1,2 +1,3 @@
 # wordlist
-Aggregate a word list from disparate sources
+
+Create a word list from a system dictionary
