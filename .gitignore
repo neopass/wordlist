@@ -63,11 +63,17 @@ typings/
 # next.js build output
 .next
 
+# Visual Studio Code
+.vscode/
+
 # Build files
 /lib
+/words.txt
+/src/*.js
 
 # Data files
 /data
 
 # Temp
 temp
+temp.*
