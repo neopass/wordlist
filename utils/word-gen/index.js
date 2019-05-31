@@ -2,6 +2,8 @@ const fs = require('fs')
 const spinner = require('../lib/spinner')
 const resolvePaths = require('../lib/resolve-paths')
 const listBuilder = require('../lib/list-builder')
+const accept = require('./accept')
+const rejections = require('./rejections')
 const options = require('./options')
 
 /**
@@ -17,29 +19,30 @@ const options = require('./options')
 async function main() {
   const opts = options()
 
-  const reAlpha = /^[a-z]+$/i
-
   /**
    * Resolve given sources (files or directories) to full paths.
    *
    * @type {string[]}
    */
-  let paths
+  let sourcePaths
 
   try {
-    paths = await resolvePaths(opts.sources)
+    sourcePaths = await resolvePaths(opts.sources)
   } catch (error) {
     console.error('error resolving sources')
     return console.error(error)
   }
 
   // Check that we've resolved at least one path.
-  if (paths.length === 0) {
+  if (sourcePaths.length === 0) {
     if (opts.sources.length === 0) {
       return console.error('no sources given')
     }
     return console.error('no source files found in "' + opts.sources + '"')
   }
+
+  // Get reject function.
+  const reject = await rejections(opts.exclude)
 
   /**
    * Generate the word list.
@@ -52,12 +55,15 @@ async function main() {
   const spinId = spinner.start()
 
   try {
-    wordList = await listBuilder(paths, (word) => {
-      if (reAlpha.test(word)) {
-        return word.toLocaleLowerCase()
+    wordList = await listBuilder(sourcePaths, (word) => {
+      const accepted = accept(word)
+      const rejected = reject(word)
+      if (accepted && !rejected) {
+        return word.toLowerCase()
       }
     })
     wordList.sort()
+
   } catch (error) {
     console.error('error building word list')
     return console.error(error)
