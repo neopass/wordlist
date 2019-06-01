@@ -1,4 +1,4 @@
-const readStreams = require('../lib/read-streams')
+const readStreams = require('./read-streams')
 const eachWord = require('./each-word')
 'use strict'
 

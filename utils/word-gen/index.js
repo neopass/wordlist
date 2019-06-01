@@ -1,9 +1,9 @@
 'use strict'
 
 const fs = require('fs')
-const spinner = require('../lib/spinner')
-const resolvePaths = require('../lib/resolve-paths')
-const listBuilder = require('../lib/list-builder')
+const spinner = require('./spinner')
+const resolvePaths = require('./resolve-paths')
+const listBuilder = require('./list-builder')
 const accept = require('./accept')
 const rejections = require('./rejections')
 const options = require('./options')
