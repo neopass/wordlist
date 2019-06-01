@@ -66,7 +66,7 @@ wordList({forceFallback: true})
   .then(li => console.log(li.isFallback)) // true
 ```
 
-Specify another system dictionary:
+Specify another system dictionary/dictionaries:
 
 ```javascript
 const { wordList } = require('@neopass/wordlist')
@@ -124,7 +124,7 @@ node utils/word-gen --sources data/books data/lists --out my-words.txt
 
 ### Exclusions
 
-Words can be _scrubbed_ by specifying `eclusions`:
+Words can be _scrubbed_ by specifying `exclusions`:
 
 ```
 node utils/word-gen <...> --exclude data/exclusions
