@@ -6,7 +6,8 @@ export interface IListOptions {
    * is a non-empty array.
    *
    * default: [
-   *  '/usr/share/dict/words'
+   *  '/usr/share/dict/words',
+   *  '$fallback',
    * ]
    */
   paths?: string[]
