@@ -1,3 +1,5 @@
+'use strict'
+
 const fs = require('fs')
 const spinner = require('../lib/spinner')
 const resolvePaths = require('../lib/resolve-paths')
@@ -16,7 +18,7 @@ const options = require('./options')
 /**
  * Run the list builder.
  */
-async function main() {
+async function wordGen() {
   const opts = options()
 
   /**
@@ -81,6 +83,4 @@ async function main() {
   }
 }
 
-if (!module.parent) {
-  main()
-}
+module.exports = wordGen
