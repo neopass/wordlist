@@ -1,6 +1,6 @@
 {
   "name": "@neopass/wordlist",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Create a word list from a system dictionary",
   "main": "lib/index.js",
   "scripts": {
