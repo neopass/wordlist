@@ -1,5 +1,6 @@
 const readStreams = require('../lib/read-streams')
 const eachWord = require('./each-word')
+'use strict'
 
 /**
  * @typedef {(word: string) => boolean|string} OnWord

@@ -1,3 +1,5 @@
+'use strict'
+
 const { regexEach } = require('regex-each')
 
 /**

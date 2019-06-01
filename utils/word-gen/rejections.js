@@ -1,3 +1,5 @@
+'use strict'
+
 const resolvePaths = require('../lib/resolve-paths')
 const readStreams = require('../lib/read-streams')
 
