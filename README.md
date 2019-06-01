@@ -14,11 +14,11 @@ There are three functions available for getting words: `wordList`, `wordListSync
 const { wordList, wordListSync, listBuilder } = require('@neopass/wordlist')
 
 // Build the list asynchronously.
-wordList().then(li => console.log('list length:', li.list.length))
+wordList().then(list => console.log('list length:', list.length))
 
 // Build the list synchronously.
-const listInfo = wordListSync()
-console.log('isFallback:', listInfo.isFallback)
+const list = wordListSync()
+console.log('list sync length:', list.length)
 
 // Use the list builder.
 const builder = listBuilder()
@@ -30,40 +30,52 @@ builder((word) => set.add(word.toLowerCase()))
 Output:
 
 ```
-isFallback: false
+list sync length: 235886
 list length: 235886
 set size: 234371
 ```
 
-The size of the dictionary is system-dependent.
+The size of the dictionary is system dependent.
 
 ## Options
 
 ```typescript
 export interface IListOptions {
   /**
-   * Force use of the fallback word list (default: false)
-   */
-  forceFallback?: boolean
-  /**
-   * Word list paths to search for in order. If no file is
-   * found, the fallback is used.
+   * Word list paths to search for in order. Only the first
+   * one found is used. This option is ignored if 'combine'
+   * is a non-empty array.
    *
    * default: [
-   *  '/usr/share/dict/words'
+   *  '/usr/share/dict/words',
+   *  '$fallback',
    * ]
    */
   paths?: string[]
+  /**
+   * Word list paths to combine. All found files are used.
+   */
+  combine?: string[]
 }
 ```
 
-Force the use of the fallback dictionary:
+Use only the fallback dictionary:
 
 ```javascript
 const { wordList } = require('@neopass/wordlist')
 
-wordList({forceFallback: true})
-  .then(li => console.log(li.isFallback)) // true
+const options = {
+  /**
+   * Specify the `$fallback` alias as the only path to search.
+   */
+  paths: [
+    // This alias resolves to the fallback list path at run time.
+    '$fallback'
+  ]
+}
+
+wordList(options)
+  .then(list => console.log(list.length)) // 99541
 ```
 
 Specify another system dictionary/dictionaries:
@@ -80,7 +92,48 @@ const options = {
 }
 
 wordList(options)
-  .then(li => console.log(li.list.length)) // 101825
+  .then(list => console.log(list.length)) // 101825
+```
+
+Combine dictionaries:
+
+```javascript
+const { wordList } = require('@neopass/wordlist')
+
+// Combine multiple dictionaries.
+const options = {
+  combine: [
+    '/usr/share/dict/words',
+    '$fallback',
+  ]
+}
+
+wordList(options)
+  .then(list => console.log(list.length)) // 335427
+```
+
+**Important**: Using `combine` with `wordList`/`wordListSync` will result in duplicates where the lists overlap. It is recommended to use `combine` with `listBuilder` to control how words are added. For example, a `Set` can be used to eliminate duplicates from combined lists:
+
+```javascript
+const { listBuilder } = require('@neopass/wordlist')
+
+// Combine multiple dictionaries.
+const options = {
+  combine: [
+    '/usr/share/dict/words',
+    '$fallback',
+  ]
+}
+
+// Create a list builder.
+const builder = listBuilder(options)
+
+// Create a set to avoid duplicate words.
+const set = new Set()
+
+// Run the builder.
+builder(word => set.add(word))
+  .then(() => console.log(set.size)) // 299569
 ```
 
 ## Fallback List
@@ -115,10 +168,10 @@ root
 The structure doesn't really matter. The format should be `utf-8` text, and can consist of one or more words per line.
 
 ```
-node utils/word-gen --sources data/books data/lists --out my-words.txt
+node bin/word-gen --sources data/books data/lists --out my-words.txt
 ```
 
-`sources` can specify multiple files or directories.
+`sources` can specify multiple files and/or directories.
 
 **Note**: only words consisting of letters `a-z` are added, and they're all lower-cased.
 
@@ -136,7 +189,7 @@ Much like the sources, exclusions can consist of multiple files and/or directori
 # Exclude whole words (case insensitive):
 spoon
 fork
-tongs
+Tongs
 
 # Exclude patterns (as regular expressions):
 /^fudge/i   # words starting with 'fudge'

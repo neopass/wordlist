@@ -1,5 +1,4 @@
 export { listBuilder, ListBuilder, OnWord } from './list-builder'
 export { wordList } from './word-list'
 export { wordListSync } from './word-list-sync'
-export { IListInfo } from './list-info'
 export { IListOptions } from './list-options'

@@ -1,3 +1,5 @@
+'use strict'
+
 const reAlpha = /^[a-z]+$/i
 
 /**

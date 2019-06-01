@@ -1,5 +1,7 @@
-const resolvePaths = require('../lib/resolve-paths')
-const readStreams = require('../lib/read-streams')
+'use strict'
+
+const resolvePaths = require('./resolve-paths')
+const readStreams = require('./read-streams')
 
 const reExp = /\/.+\/[a-z]*/
 const reComment = /(?: |^)#.+$/
