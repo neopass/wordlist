@@ -3,7 +3,7 @@ import { IListOptions, defaultOptions } from './list-options'
 import { listPath } from './list-path'
 
 /**
- *
+ * Return a system word list or a fallback list, synchronously.
  */
 export function wordListSync(options?: IListOptions): string[] {
   const opts = {...defaultOptions, ...options}
