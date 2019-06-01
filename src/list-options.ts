@@ -1,11 +1,8 @@
 
 export interface IListOptions {
   /**
-   * Force use of the fallback word list (default: false)
-   */
-  forceFallback?: boolean
-  /**
-   * Word list paths to search for in order.
+   * Word list paths to search for in order. Only the first
+   * one found is used.
    *
    * default: [
    *  '/usr/share/dict/words'
@@ -18,7 +15,6 @@ export interface IListOptions {
  *
  */
 export const defaultOptions: IListOptions = {
-  forceFallback: false,
   paths: [
     '/usr/share/dict/words',
   ]
