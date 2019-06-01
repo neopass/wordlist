@@ -22,5 +22,6 @@ export interface IListOptions {
 export const defaultOptions: IListOptions = {
   paths: [
     '/usr/share/dict/words',
+    '$fallback'
   ]
 }
