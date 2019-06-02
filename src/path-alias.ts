@@ -1,7 +1,7 @@
 import path from 'path'
 
 const aliasMap = new Map([
-  ['$fallback', path.resolve(__dirname, '../words.txt')]
+  ['$fallback', path.resolve(__dirname, '../fallback.txt')]
 ])
 
 /**

@@ -68,7 +68,7 @@ typings/
 
 # Build files
 /lib
-/words.txt
+/fallback.txt
 /src/*.js
 
 # Data files
