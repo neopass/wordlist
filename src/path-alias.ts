@@ -1,6 +1,6 @@
 import path from 'path'
 
-const pathMap = new Map([
+const aliasMap = new Map([
   ['$fallback', path.resolve(__dirname, '../words.txt')]
 ])
 
@@ -8,5 +8,5 @@ const pathMap = new Map([
  * Return a path alias if it exists, otherwise return the given path.
  */
 export function pathAlias(path: string) {
-  return pathMap.get(path) || path
+  return aliasMap.get(path) || path
 }
