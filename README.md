@@ -1,8 +1,8 @@
 # wordlist
 
-Create a word list from a system dictionary. `wordlist` looks for a system dictionary at `/usr/share/dict/words`, and uses a built-in fallback list if the dictionary is not found. Additional dictionary/wordlist paths can be configured via the [options](#options).
+Generate a word list from various sources, including [Scowl](http://wordlist.aspell.net). Includes a default list of ~140,000 words. Additional dictionary/wordlist paths can be configured via the [options](#options).
 
-```bash
+```bashxw
 npm install @neopass/wordlist
 ```
 
@@ -10,12 +10,12 @@ npm install @neopass/wordlist
 
 - [Usage](#usage)
 - [Options](#options)
-  - [Force the Default Word List](#force-the-default-word-list)
   - [Specify Alternate Word Lists](#specify-alternate-word-lists)
   - [Combine Lists](#combine-lists)
 - [The Default List](#the-default-list)
-  - [Determine if the Default Will Be Used](#determine-if-the-default-will-be-used)
-- [Building a Custom Word List File](#building-a-custom-word-list-file)
+- [Generate a List From Scowl Sources](#generate-a-list-from-scowl-sources)
+  - [Scowl Aliases](#scowl-aliases)
+- [Creating a Custom Word List File](#creating-a-custom-word-list-file)
   - [Exclusions](#exclusions)
 - [Scowl License](#scowl-license)
 
@@ -27,11 +27,11 @@ There are three functions available for getting words: `wordList`, `wordListSync
 const { wordList, wordListSync, listBuilder } = require('@neopass/wordlist')
 
 // Build the list asynchronously.
-wordList().then(list => console.log('list length:', list.length))
+wordList().then(list => console.log(list.length)) // 142446
 
 // Build the list synchronously.
 const list = wordListSync()
-console.log('list sync length:', list.length)
+console.log(list.length) // 142446
 
 // Use the list builder.
 const builder = listBuilder()
@@ -39,18 +39,8 @@ const set = new Set()
 
 // Convert words to lower case.
 builder((word) => set.add(word.toLowerCase()))
-  .then(() => console.log('set size:', set.size))
+  .then(() => console.log(set.size)) // 142446
 ```
-
-Output:
-
-```
-list sync length: 235886
-list length: 235886
-set size: 234371
-```
-
-The size of the dictionary is system dependent.
 
 ## Options
 
@@ -62,7 +52,6 @@ export interface IListOptions {
    * is a non-empty array.
    *
    * default: [
-   *  '/usr/share/dict/words',
    *  '$default',
    * ]
    */
@@ -74,26 +63,13 @@ export interface IListOptions {
 }
 ```
 
-### Force the Default Word List
+`paths`: Allows [alternate](#specify-alternate-word-lists), fallback lists to be used.
 
-```javascript
-const { wordList } = require('@neopass/wordlist')
-
-const options = {
-  /**
-   * Specify the `$default` alias as the only path to search.
-   */
-  paths: [
-    // This alias resolves to the default list path at run time.
-    '$default'
-  ]
-}
-
-wordList(options)
-  .then(list => console.log(list.length)) // 142409
-```
+`combine`: Allows multiple lists to be [combined](#combine-lists) into one.
 
 ### Specify Alternate Word Lists
+
+The `paths` specified in `options` are searched in order. The first list found is used. This allows for the use of system word lists with different names and/or locations on various platforms. A common location for the system word list is `/usr/share/dict/words`.
 
 ```javascript
 const { wordList } = require('@neopass/wordlist')
@@ -103,6 +79,7 @@ const options = {
   paths: [
     '/usr/share/dict/british-english',  // if found, use this one
     '/usr/share/dict/american-english', // else if found, use this one
+    '/usr/share/dict/words',            // else if found, use this one
     '$default',  // else use this one
   ]
 }
@@ -113,14 +90,16 @@ wordList(options)
 
 ### Combine Lists
 
+Lists can be combined with the `combine` option:
+
 ```javascript
 const { wordList } = require('@neopass/wordlist')
 
 // Combine multiple dictionaries.
 const options = {
   combine: [
-    '/usr/share/dict/words',
-    '$default',
+    '/usr/share/dict/words', // use this one
+    '$default',              // and use this one
   ]
 }
 
@@ -154,44 +133,246 @@ builder(word => set.add(word))
 
 ## The Default List
 
-The default list is a ~140,000-word, PG-13, lower-case list taken from ancient and classic literature, with some other additions such as slang, neologisms, and geography.
+The default list is a ~140,000-word, PG-13, lower-case list taken from english [Scowl](http://wordlist.aspell.net) sources, with some other additions including slang.
 
 Suggestions for additions to the default list are welcome by [submitting an issue](https://github.com/neopass/wordlist/issues). Whole lists are definitely preferred to single-word suggestions, e.g., `"notable extraterrestrials"`, `"insects of upper polish honduras"`, or `"names of horses in modern literature"`. _Suggestions for inappropriate word removal are also welcome (curse words, coarse words/slang, racial slurs)_.
 
-By default the fallback list alias, `$default` is the last item in the `paths` option:
+By default the fallback list alias, `$default`, is included in the options. This allows `wordlist` to create a list without any additional configuration.
 
 ```javascript
 export const defaultOptions: IListOptions = {
   paths: [
-    '/usr/share/dict/words',
     '$default'
   ]
 }
 ```
 
-### Determine if the Default Will Be Used
+The `$default` alias resolves to a path at run time.
 
-You can pass a `wordlist` options object to the `willUseFallback` function to determine if the given options will resolve to the fallback list:
+## Generate a List From Scowl Sources
+
+[Scowl](http://wordlist.aspell.net) word lists are included as aliases, and can be used to generate custom lists:
 
 ```javascript
-import { willUseFallback } from '@neopass/wordlist'
+const { listBuilder } = require('@neopass/wordlist')
 
+// Combine multiple lists from scowl.
 const options = {
-  paths: [
-    '/no/list/here',
-    '$default',
+  combine: [
+    '$english-words.80',
+    '$special-hacker.50',
+    'variant_1-words.95',
+    'variant_2-words.95',
+    'variant_3-words.95',
   ]
 }
 
-const willUse = willUseFallback(options)
-console.log(willUse) // true
+// Create a list builder.
+const builder = listBuilder(options)
+
+// Create a set to avoid duplicate words.
+const set = new Set()
+
+// Run the builder.
+builder(word => set.add(word))
+  .then(() => console.log(set.size)) // 140749
 ```
 
-The `$default` alias resolves to a path at run time.
+**Note:** Scowl sources contain some words with apostrophes `'s` and also unicode characters. Care should be taken to deal with these depending on your needs. For example:
 
-This assures that if a system dictionary is not found, a word list will still be provided. Paths in the `paths` option are searched in order, with the first item that points to a file used as the word list.
+```javascript
+const { listBuilder } = require('@neopass/wordlist')
 
-## Building a Custom Word List File
+/**
+ * Determine if a word should be added.
+ */
+function accepted(word) {
+  // Only accept words with characters a-z.
+  return (/^[a-z]+$/i).test(word)
+}
+
+// Combine multiple lists from scowl.
+const options = {
+  combine: [
+    '$english-words.80',
+    '$special-hacker.50',
+    'variant_1-words.95',
+    'variant_2-words.95',
+    'variant_3-words.95',
+  ]
+}
+
+// Create a list builder.
+const builder = listBuilder(options)
+
+// Create a set to avoid duplicate words.
+const set = new Set()
+
+// Run the builder.
+builder((word) => { if (accepted(word)) { set.add(word) } })
+  .then(() => console.log(set.size)) // 128368
+```
+
+### Scowl Aliases
+
+See the [Scowl Readme](https://github.com/neopass/wordlist/blob/master/scowl/README) for a description of scowl sources. The below is a representative sample of the [available sources](https://github.com/neopass/wordlist/blob/master/scowl/words).
+
+```
+$american-abbreviations.70
+$american-abbreviations.95
+$american-proper-names.80
+$american-proper-names.95
+$american-upper.50
+$american-upper.80
+$american-upper.95
+$american-words.10
+$american-words.20
+$american-words.35
+$american-words.80
+$american-words.95
+$australian-abbreviations.35
+$australian-abbreviations.80
+$australian-abbreviations.95
+$australian-contractions.35
+$australian-proper-names.35
+$australian-proper-names.80
+$australian-proper-names.95
+$australian-upper.50
+$australian-upper.60
+$australian-upper.70
+$australian-upper.80
+$australian-upper.95
+$australian-words.10
+$australian-words.20
+$australian-words.35
+$australian-words.40
+$australian-words.50
+$australian-words.55
+$australian-words.60
+$australian-words.70
+$australian-words.80
+$australian-words.95
+$australian_variant_1-abbreviations.95
+$australian_variant_1-contractions.60
+$australian_variant_1-proper-names.80
+$australian_variant_1-proper-names.95
+$australian_variant_1-upper.80
+$australian_variant_1-upper.95
+$australian_variant_1-words.10
+$australian_variant_1-words.80
+$australian_variant_1-words.95
+$australian_variant_2-abbreviations.80
+$australian_variant_2-abbreviations.95
+$australian_variant_2-contractions.50
+$australian_variant_2-contractions.70
+$australian_variant_2-proper-names.95
+$australian_variant_2-upper.80
+$australian_variant_2-words.10
+$australian_variant_2-words.55
+$australian_variant_2-words.95
+$british-abbreviations.35
+$british-abbreviations.80
+$british-abbreviations.95
+$british-proper-names.80
+$british-proper-names.95
+$british-upper.50
+$british-upper.80
+$british-upper.95
+$british-words.10
+$british-words.20
+$british-words.35
+$british-words.80
+$british-words.95
+$british_variant_1-abbreviations.55
+$british_variant_1-contractions.35
+$british_variant_1-contractions.60
+$british_variant_1-upper.95
+$british_variant_1-words.10
+$british_variant_1-words.95
+$british_variant_2-abbreviations.70
+$british_variant_2-contractions.50
+$british_variant_2-upper.35
+$british_variant_2-upper.95
+$british_variant_2-words.10
+$british_variant_2-words.80
+$british_variant_2-words.95
+$british_z-abbreviations.80
+$british_z-abbreviations.95
+$british_z-proper-names.80
+$british_z-proper-names.95
+$british_z-upper.50
+$british_z-upper.95
+$british_z-words.10
+$british_z-words.95
+$canadian-abbreviations.55
+$canadian-proper-names.80
+$canadian-proper-names.95
+$canadian-upper.50
+$canadian-upper.95
+$canadian-words.10
+$canadian-words.95
+$canadian_variant_1-abbreviations.55
+$canadian_variant_1-contractions.35
+$canadian_variant_1-proper-names.95
+$canadian_variant_1-upper.35
+$canadian_variant_1-upper.80
+$canadian_variant_1-words.35
+$canadian_variant_1-words.95
+$canadian_variant_2-abbreviations.70
+$canadian_variant_2-contractions.50
+$canadian_variant_2-upper.35
+$canadian_variant_2-upper.80
+$canadian_variant_2-words.35
+$canadian_variant_2-words.80
+$english-abbreviations.10
+$english-abbreviations.20
+$english-abbreviations.35
+$english-abbreviations.80
+$english-abbreviations.95
+$english-contractions.35
+$english-contractions.80
+$english-contractions.95
+$english-proper-names.35
+$english-proper-names.80
+$english-upper.10
+$english-upper.35
+$english-upper.50
+$english-upper.80
+$english-upper.95
+$english-words.80
+$english-words.95
+$special-hacker.50
+$special-roman-numerals.35
+$variant_1-abbreviations.55
+$variant_1-abbreviations.95
+$variant_1-contractions.35
+$variant_1-proper-names.80
+$variant_1-proper-names.95
+$variant_1-upper.35
+$variant_1-upper.80
+$variant_1-upper.95
+$variant_1-words.10
+$variant_1-words.20
+$variant_1-words.80
+$variant_2-abbreviations.70
+$variant_2-abbreviations.95
+$variant_2-contractions.50
+$variant_2-contractions.70
+$variant_2-upper.35
+$variant_2-upper.95
+$variant_2-words.20
+$variant_2-words.35
+$variant_2-words.95
+$variant_3-abbreviations.40
+$variant_3-abbreviations.95
+$variant_3-words.10
+$variant_3-words.35
+$variant_3-words.95
+```
+
+Scowl aliases consist of the `$` character followed by the [source file name](https://github.com/neopass/wordlist/blob/master/scowl/words).
+
+## Creating a Custom Word List File
 
 A custom word list from other sources can be assmbled with the `wordlist-gen` binary, or the `word-gen` utility in the [wordlist repo](https://github.com/neopass/wordlist).
 
@@ -224,6 +405,10 @@ root
     | +-- names.txt
     | +-- animals.txt
     | +-- slang.txt
+    +-- scowl
+    | +-- english-words.80
+    | +-- special-hacker.50
+    | +-- variant_1-words.95
     +-- exclusions
     | +-- patterns.txt
 ```
@@ -231,7 +416,7 @@ root
 The structure doesn't really matter. The format should be `utf-8` text, and can consist of one or more words per line. `exclusions` is optional.
 
 ```bash
-npx wordlist-gen --sources data/books data/lists --out my-words.txt
+npx wordlist-gen --sources data/books data/lists data/scowl --out my-words.txt
 ```
 
 `sources` can specify multiple files and/or directories.
