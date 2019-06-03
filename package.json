@@ -45,6 +45,6 @@
     "lib",
     "utils",
     "bin",
-    "fallback.txt"
+    "default.txt"
   ]
 }
