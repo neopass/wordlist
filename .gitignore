@@ -68,7 +68,6 @@ typings/
 
 # Build files
 /lib
-/fallback.txt
 /src/*.js
 
 # Data files
@@ -77,3 +76,7 @@ typings/
 # Temp
 temp
 temp.*
+
+# Other
+/fallback.txt
+/excluded.txt
