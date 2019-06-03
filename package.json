@@ -1,7 +1,7 @@
 {
   "name": "@neopass/wordlist",
   "version": "0.4.1",
-  "description": "Generate a word list from various sources",
+  "description": "Generate a word list from various sources, including SCOWL",
   "main": "lib/index.js",
   "scripts": {
     "build": "./word-gen && tsc && babel lib --out-dir lib",
