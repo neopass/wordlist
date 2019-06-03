@@ -4,11 +4,12 @@
   "description": "Generate a word list from various sources, including SCOWL",
   "main": "lib/index.js",
   "scripts": {
-    "build": "./word-gen && tsc && babel lib --out-dir lib",
+    "build": "tsc && babel lib --out-dir lib",
     "clean": "rm -rf lib",
     "test": "npm run clean && npm run build && mocha",
     "test-watch": "mocha --watch-extensions ts --watch",
     "watch": "tsc --watch",
+    "word-gen": "./word-gen",
     "prepublishOnly": "npm run clean && npm run build"
   },
   "repository": {
