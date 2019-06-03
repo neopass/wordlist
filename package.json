@@ -46,6 +46,6 @@
     "lib",
     "utils",
     "bin",
-    "words.txt"
+    "fallback.txt"
   ]
 }
