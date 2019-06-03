@@ -1,7 +1,7 @@
 {
   "name": "@neopass/wordlist",
   "version": "0.3.4",
-  "description": "Create a word list from a system dictionary",
+  "description": "Generate a word list from various sources",
   "main": "lib/index.js",
   "scripts": {
     "build": "./word-gen && tsc && babel lib --out-dir lib",
