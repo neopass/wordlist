@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { wordList, wordListSync, listBuilder } from '../src'
+import { wordList, wordListSync } from '../src'
 
 describe('wordList', () => {
   it('works with no configuration', () => {
