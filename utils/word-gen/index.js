@@ -56,12 +56,16 @@ async function wordGen() {
   process.stdout.write('Generating word list... ')
   const spinId = spinner.start()
 
+  const excludeSet = new Set()
+
   try {
     wordList = await listBuilder(sourcePaths, (word) => {
       const accepted = accept(word)
       const rejected = reject(word)
       if (accepted && !rejected) {
         return word.toLowerCase()
+      } else {
+        excludeSet.add(word.toLowerCase())
       }
     })
     wordList.sort()
@@ -73,6 +77,15 @@ async function wordGen() {
 
   spinner.stop(spinId)
   console.log('  words collected:', wordList.length)
+
+  // Write the excluded file.
+  if (excludeSet.size > 0)  {
+    const excluded = [...excludeSet]
+    const stream = fs.createWriteStream('excluded.txt')
+    excluded.forEach(word => stream.write(word + '\n'))
+    stream.close()
+    console.log('  excluded words written to excluded.txt')
+  }
 
   // Write the ouptut file.
   if (opts.out) {
