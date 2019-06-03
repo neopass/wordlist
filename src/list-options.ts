@@ -6,7 +6,6 @@ export interface IListOptions {
    * is a non-empty array.
    *
    * default: [
-   *  '/usr/share/dict/words',
    *  '$default',
    * ]
    */
@@ -22,7 +21,6 @@ export interface IListOptions {
  */
 export const defaultOptions: IListOptions = {
   paths: [
-    '/usr/share/dict/words',
     '$default'
   ]
 }
