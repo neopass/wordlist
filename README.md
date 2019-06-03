@@ -2,6 +2,8 @@
 
 Generate a word list from various sources, including [SCOWL](http://wordlist.aspell.net). Includes a default list of ~140,000 english words. Additional dictionary/wordlist paths can be configured via the [options](#options).
 
+System dictionaries can also be used, such as `/usr/share/dict/words`, `/usr/share/dict/british-english`, etc.
+
 ```bash
 npm install @neopass/wordlist
 ```
@@ -15,7 +17,7 @@ npm install @neopass/wordlist
 - [The Default List](#the-default-list)
 - [Generate a List From SCOWL Sources](#generate-a-list-from-scowl-sources)
   - [SCOWL Aliases](#scowl-aliases)
-- [Creating a Custom Word List File](#creating-a-custom-word-list-file)
+- [Create a Custom Word List File](#create-a-custom-word-list-file)
   - [Exclusions](#exclusions)
   - [Using the Custom List](#using-the-custom-list)
 - [SCOWL License](#scowl-license)
@@ -376,7 +378,7 @@ $variant_3-words.95
 
 SCOWL aliases consist of the `$` character followed by the [source file name](https://github.com/neopass/wordlist/blob/master/scowl/words).
 
-## Creating a Custom Word List File
+## Create a Custom Word List File
 
 A custom word list from other sources can be assmbled with the `wordlist-gen` binary, or the `word-gen` utility in the [wordlist repo](https://github.com/neopass/wordlist).
 
