@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/neopass/wordlist.svg?branch=master)](https://travis-ci.org/neopass/wordlist)
+
 # wordlist
 
 Generate a word list from various sources, including [SCOWL](http://wordlist.aspell.net). Includes a default list of ~140,000 english words. Additional dictionary/wordlist paths can be configured via the [options](#options).
