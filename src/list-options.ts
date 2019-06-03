@@ -7,7 +7,7 @@ export interface IListOptions {
    *
    * default: [
    *  '/usr/share/dict/words',
-   *  '$fallback',
+   *  '$default',
    * ]
    */
   paths?: string[]
@@ -23,6 +23,6 @@ export interface IListOptions {
 export const defaultOptions: IListOptions = {
   paths: [
     '/usr/share/dict/words',
-    '$fallback'
+    '$default'
   ]
 }

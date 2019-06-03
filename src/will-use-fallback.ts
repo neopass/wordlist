@@ -13,5 +13,5 @@ export function willUseFallback(options: IListOptions) {
     .map(path => pathAlias(path))
     .filter(path => isFile(path))[0]
 
-  return path === pathAlias('$fallback')
+  return path === pathAlias('$default')
 }

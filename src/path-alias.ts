@@ -2,7 +2,7 @@ import path from 'path'
 import { addScowlAliases } from './add-scowl-aliases'
 
 const aliasMap = new Map([
-  ['$fallback', path.resolve(__dirname, '../fallback.txt')],
+  ['$default', path.resolve(__dirname, '../fallback.txt')],
 ])
 
 addScowlAliases(aliasMap)

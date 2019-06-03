@@ -1,3 +1,3 @@
 #!/bin/sh
 
-node bin/word-gen --sources data/books data/lists --exclude data/exclude --out fallback.txt
+node bin/word-gen --sources data/books data/lists --exclude data/exclude --out default.txt
