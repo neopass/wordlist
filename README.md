@@ -15,7 +15,7 @@ npm install @neopass/wordlist
   - [Combine Lists](#combine-lists)
 - [The Default List](#the-default-list)
   - [Determine if the Default Will Be Used](#determine-if-the-default-will-be-used)
-- [Creating a Custom Word List](#creating-a-custom-word-list)
+- [Building a Custom Word List File](#building-a-custom-word-list-file)
   - [Exclusions](#exclusions)
 - [Scowl License](#scowl-license)
 
@@ -90,7 +90,7 @@ const options = {
 }
 
 wordList(options)
-  .then(list => console.log(list.length)) // 102442
+  .then(list => console.log(list.length)) // 142409
 ```
 
 ### Specify Alternate Word Lists
@@ -154,9 +154,9 @@ builder(word => set.add(word))
 
 ## The Default List
 
-The default list is a ~100,000-word, PG-13, lower-case list taken from ancient and classic literature, with some other additions such as slang, neologisms, and geography.
+The default list is a ~140,000-word, PG-13, lower-case list taken from ancient and classic literature, with some other additions such as slang, neologisms, and geography.
 
-Suggestions for additions to the default list are welcome by [submitting an issue](https://github.com/neopass/wordlist/issues). Whole lists are definitely preferred to single-word suggestions, e.g., `"notable extraterrestrials"`, `"insects of upper polish honduras"`, or `"names of horses in modern literature"`.
+Suggestions for additions to the default list are welcome by [submitting an issue](https://github.com/neopass/wordlist/issues). Whole lists are definitely preferred to single-word suggestions, e.g., `"notable extraterrestrials"`, `"insects of upper polish honduras"`, or `"names of horses in modern literature"`. _Suggestions for inappropriate word removal are also welcome (curse words, coarse words/slang, racial slurs)_.
 
 By default the fallback list alias, `$default` is the last item in the `paths` option:
 
@@ -191,9 +191,9 @@ The `$default` alias resolves to a path at run time.
 
 This assures that if a system dictionary is not found, a word list will still be provided. Paths in the `paths` option are searched in order, with the first item that points to a file used as the word list.
 
-## Creating a Custom Word List
+## Building a Custom Word List File
 
-A custom word list can be assmbled with the `wordlist-gen` binary, or the `word-gen` utility in the [wordlist repo](https://github.com/neopass/wordlist).
+A custom word list from other sources can be assmbled with the `wordlist-gen` binary, or the `word-gen` utility in the [wordlist repo](https://github.com/neopass/wordlist).
 
 From the `@neopass/wordlist` package:
 
