@@ -6,6 +6,8 @@
   "scripts": {
     "build": "./word-gen && tsc && babel lib --out-dir lib",
     "clean": "rm -rf lib",
+    "test": "npm run clean && npm run build && mocha",
+    "test-watch": "mocha --watch-extensions ts --watch",
     "watch": "tsc --watch",
     "prepublishOnly": "npm run clean && npm run build"
   },
@@ -33,8 +35,12 @@
     "@babel/core": "^7.4.5",
     "@babel/plugin-transform-runtime": "^7.4.4",
     "@babel/preset-env": "^7.4.5",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.0.2",
     "@types/yargs": "^13.0.0",
+    "mocha": "^6.1.4",
+    "source-map-support": "^0.5.12",
+    "ts-node": "^8.2.0",
     "typescript": "^3.5.1"
   },
   "dependencies": {
