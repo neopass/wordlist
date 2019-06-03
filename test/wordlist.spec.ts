@@ -8,19 +8,19 @@ describe('wordList', () => {
     })
   })
 
-  it('allows paths overrides', async () => {
+  it('allows paths overrides', () => {
     return wordList({paths: ['$special-hacker.50']}).then((list) => {
       assert.strictEqual(list.length, 1649)
     })
   })
 
-  it('falls back when path not found', async () => {
+  it('falls back when path not found', () => {
     return wordList({paths: ['/no/file/here', '$special-hacker.50']}).then((list) => {
       assert.strictEqual(list.length, 1649)
     })
   })
 
-  it('combines files', async () => {
+  it('combines files', () => {
     return wordList({combine: ['$special-hacker.50', '$variant_1-words.95']}).then((list) => {
       assert.strictEqual(list.length, 2014)
     })
