@@ -25,14 +25,18 @@ async function isDirectory(fileOrDir) {
  * @returns {Promise<string[]>}
  */
 async function resolvePath(fileOrDir) {
-  const isDir = await isDirectory(fileOrDir)
+  if (fs.existsSync(fileOrDir)) {
+    const isDir = await isDirectory(fileOrDir)
 
-  if (isDir) {
-    const names = await readDirectory(fileOrDir)
-    return names.map(n => path.join(fileOrDir, n))
+    if (isDir) {
+      const names = await readDirectory(fileOrDir)
+      return names.map(n => path.join(fileOrDir, n))
+    }
+
+    return [fileOrDir]
   }
 
-  return [fileOrDir]
+  return []
 }
 
 /**
@@ -48,9 +52,9 @@ async function resolvePaths(paths) {
    */
   const fileList = []
 
-  for (const p of paths) {
-    const pathList = await resolvePath(p)
-    fileList.push.apply(fileList, pathList)
+  for (const path of paths) {
+    const pathList = await resolvePath(path)
+    pathList.forEach(p => fileList.push(p))
   }
 
   return fileList
