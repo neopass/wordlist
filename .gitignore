@@ -78,5 +78,5 @@ temp
 temp.*
 
 # Other
-/fallback.txt
+/default.txt
 /excluded.txt
