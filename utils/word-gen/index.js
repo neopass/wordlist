@@ -32,16 +32,16 @@ async function wordGen() {
   try {
     sourcePaths = await resolvePaths(opts.sources)
   } catch (error) {
-    console.error('error resolving sources')
-    return console.error(error)
+    console.log('error resolving sources')
+    return console.log(error)
   }
 
   // Check that we've resolved at least one path.
   if (sourcePaths.length === 0) {
     if (opts.sources.length === 0) {
-      return console.error('no sources given')
+      return console.log('no sources given')
     }
-    return console.error('no source files found in "' + opts.sources + '"')
+    return console.log('no source files found in "' + opts.sources + '"')
   }
 
   // Get reject function.
