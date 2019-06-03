@@ -1,8 +1,8 @@
 # wordlist
 
-Generate a word list from various sources, including [Scowl](http://wordlist.aspell.net). Includes a default list of ~140,000 words. Additional dictionary/wordlist paths can be configured via the [options](#options).
+Generate a word list from various sources, including [SCOWL](http://wordlist.aspell.net). Includes a default list of ~140,000 english words. Additional dictionary/wordlist paths can be configured via the [options](#options).
 
-```bashxw
+```bash
 npm install @neopass/wordlist
 ```
 
@@ -13,15 +13,16 @@ npm install @neopass/wordlist
   - [Specify Alternate Word Lists](#specify-alternate-word-lists)
   - [Combine Lists](#combine-lists)
 - [The Default List](#the-default-list)
-- [Generate a List From Scowl Sources](#generate-a-list-from-scowl-sources)
-  - [Scowl Aliases](#scowl-aliases)
+- [Generate a List From SCOWL Sources](#generate-a-list-from-scowl-sources)
+  - [SCOWL Aliases](#scowl-aliases)
 - [Creating a Custom Word List File](#creating-a-custom-word-list-file)
   - [Exclusions](#exclusions)
-- [Scowl License](#scowl-license)
+  - [Using the Custom List](#using-the-custom-list)
+- [SCOWL License](#scowl-license)
 
 ## Usage
 
-There are three functions available for getting words: `wordList`, `wordListSync`, and `listBuilder`.
+There are three functions available for creating word lists: `wordList`, `wordListSync`, and `listBuilder`. The [default list](#the-default-list) is included by default, so no configuration of [options](#options) is required.
 
 ```javascript
 const { wordList, wordListSync, listBuilder } = require('@neopass/wordlist')
@@ -38,7 +39,7 @@ const builder = listBuilder()
 const set = new Set()
 
 // Convert words to lower case.
-builder((word) => set.add(word.toLowerCase()))
+builder((word) => set.add(word))
   .then(() => console.log(set.size)) // 142446
 ```
 
@@ -98,6 +99,7 @@ const { wordList } = require('@neopass/wordlist')
 // Combine multiple dictionaries.
 const options = {
   combine: [
+    // System dictionary.
     '/usr/share/dict/words', // use this one
     '$default',              // and use this one
   ]
@@ -112,10 +114,12 @@ wordList(options)
 ```javascript
 const { listBuilder } = require('@neopass/wordlist')
 
-// Combine multiple dictionaries.
+// Combine multiple lists.
 const options = {
   combine: [
+    // System dictionary.
     '/usr/share/dict/words',
+    // Default list.
     '$default',
   ]
 }
@@ -133,11 +137,11 @@ builder(word => set.add(word))
 
 ## The Default List
 
-The default list is a ~140,000-word, PG-13, lower-case list taken from english [Scowl](http://wordlist.aspell.net) sources, with some other additions including slang.
+The default list is a ~140,000-word, PG-13, lower-case list taken from english [SCOWL](http://wordlist.aspell.net) sources, with some other additions including slang.
 
-Suggestions for additions to the default list are welcome by [submitting an issue](https://github.com/neopass/wordlist/issues). Whole lists are definitely preferred to single-word suggestions, e.g., `"notable extraterrestrials"`, `"insects of upper polish honduras"`, or `"names of horses in modern literature"`. _Suggestions for inappropriate word removal are also welcome (curse words, coarse words/slang, racial slurs)_.
+Suggestions for additions to the default list are welcome by [submitting an issue](https://github.com/neopass/wordlist/issues). Whole lists are definitely preferred to single-word suggestions, e.g., `"notable extraterrestrials in history"`, `"insects of upper polish honduras"`, or `"names of horses in modern literature"`. _Suggestions for inappropriate word removal are also welcome (curse words, coarse words/slang, racial slurs, etc.)_.
 
-By default the fallback list alias, `$default`, is included in the options. This allows `wordlist` to create a list without any additional configuration.
+By default the list alias, `$default`, is included in the options. This allows `wordlist` to create a largish list without any additional configuration.
 
 ```javascript
 export const defaultOptions: IListOptions = {
@@ -147,11 +151,11 @@ export const defaultOptions: IListOptions = {
 }
 ```
 
-The `$default` alias resolves to a path at run time.
+The `$default` alias (along with [other aliases](#scowl-aliases)) resolves to a path at run time.
 
 ## Generate a List From Scowl Sources
 
-[Scowl](http://wordlist.aspell.net) word lists are included as aliases, and can be used to generate custom lists:
+[SCOWL](http://wordlist.aspell.net) word lists are included as aliases, and can be used to generate custom lists:
 
 ```javascript
 const { listBuilder } = require('@neopass/wordlist')
@@ -178,7 +182,7 @@ builder(word => set.add(word))
   .then(() => console.log(set.size)) // 140749
 ```
 
-**Note:** Scowl sources contain some words with apostrophes `'s` and also unicode characters. Care should be taken to deal with these depending on your needs. For example:
+**Note:** SCOWL sources contain some words with apostrophes `'s` and also unicode characters. Care should be taken to deal with these depending on your needs. For example:
 
 ```javascript
 const { listBuilder } = require('@neopass/wordlist')
@@ -215,7 +219,7 @@ builder((word) => { if (accepted(word)) { set.add(word) } })
 
 ### Scowl Aliases
 
-See the [Scowl Readme](https://github.com/neopass/wordlist/blob/master/scowl/README) for a description of scowl sources. The below is a representative sample of the [available sources](https://github.com/neopass/wordlist/blob/master/scowl/words).
+See the [SCOWL Readme](https://github.com/neopass/wordlist/blob/master/scowl/README) for a description of SCOWL sources. The below is a representative sample of the [available source aliases](https://github.com/neopass/wordlist/blob/master/scowl/words).
 
 ```
 $american-abbreviations.70
@@ -370,7 +374,7 @@ $variant_3-words.35
 $variant_3-words.95
 ```
 
-Scowl aliases consist of the `$` character followed by the [source file name](https://github.com/neopass/wordlist/blob/master/scowl/words).
+SCOWL aliases consist of the `$` character followed by the [source file name](https://github.com/neopass/wordlist/blob/master/scowl/words).
 
 ## Creating a Custom Word List File
 
@@ -446,7 +450,27 @@ Tongs
 /^BLASTED$/ # exact match for uppercase 'blasted'
 ```
 
-## Scowl License
+### Using the Custom List
+
+Use `path.resolve` or `path.join` to create an absolute path to your custom word list file:
+
+```javascript
+const path = require('path')
+const { wordList } = require('@neopass/wordlist')
+
+// Prefer british-english list.
+const options = {
+  paths: [
+    // Use a path relative to the location of this module.
+    path.resolve(__dirname, '../my-words.txt')
+  ]
+}
+
+wordList(options)
+  .then(list => console.log(list.length)) // 124030
+```
+
+## SCOWL License
 
 ```
 The collective work is Copyright 2000-2016 by Kevin Atkinson as well
