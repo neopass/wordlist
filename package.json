@@ -36,7 +36,6 @@
   },
   "dependencies": {
     "@babel/runtime-corejs2": "^7.4.5",
-    "regex-each": "^2.0.0",
     "yargs": "^13.2.4"
   },
   "bin": {
