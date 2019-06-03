@@ -32,11 +32,8 @@ const reSplitter = new RegExp(String.raw`[\[\]\s/.?!,:;(){}~*_=│|…${dashes}-
 
 const reZeroes = new RegExp(`[${zero}]`, 'g')
 
-/**
- * @todo Move `'s` removal to a post-word transform step.
- */
 const qMarks = `'’‘"“”`
-const reRemove = new RegExp(`^[${qMarks}]+|[${qMarks}]+$|[${qMarks}]s$`, 'gi')
+const reQuotes = new RegExp(`^[${qMarks}]+|[${qMarks}]+$`, 'gi')
 
 /**
  * @param {string} line
@@ -46,9 +43,8 @@ const reRemove = new RegExp(`^[${qMarks}]+|[${qMarks}]+$|[${qMarks}]s$`, 'gi')
  */
 function eachWord(line, onWord) {
   let words = line.split(reSplitter)
-  words = words.map((word) => word.replace(reZeroes, '').replace(reRemove, ''))
+  words = words.map((word) => word.replace(reZeroes, '').replace(reQuotes, ''))
   words.forEach((word) => { if (word.length > 0) { onWord(word) } })
-  // words.forEach(word => { if (word.startsWith('"')) { console.log(word) }})
 }
 
 module.exports = eachWord
