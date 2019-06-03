@@ -47,6 +47,7 @@
     "lib",
     "utils",
     "bin",
+    "scowl",
     "default.txt"
   ]
 }
