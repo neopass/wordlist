@@ -10,5 +10,4 @@ export function addScowlAliases(map: Map<string, string>) {
 
   const names = fs.readdirSync(scowlPath)
   names.forEach(name => map.set(`$${name}`, path.resolve(__dirname, `../scowl/words/${name}`)))
-  console.log(map)
 }
