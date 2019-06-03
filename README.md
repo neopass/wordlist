@@ -10,11 +10,11 @@ npm install @neopass/wordlist
 
 - [Usage](#usage)
 - [Options](#options)
-  - [Force the Fallback Word List](#force-the-fallback-word-list)
+  - [Force the Default Word List](#force-the-default-word-list)
   - [Specify Alternate Word Lists](#specify-alternate-word-lists)
   - [Combine Lists](#combine-lists)
-- [The Fallback List](#the-fallback-list)
-  - [Determine if the Fallback Will Be Used](#determine-if-the-fallback-will-be-used)
+- [The Default List](#the-default-list)
+  - [Determine if the Default Will Be Used](#determine-if-the-default-will-be-used)
 - [Creating a Custom Word List](#creating-a-custom-word-list)
   - [Exclusions](#exclusions)
 - [Scowl License](#scowl-license)
@@ -63,7 +63,7 @@ export interface IListOptions {
    *
    * default: [
    *  '/usr/share/dict/words',
-   *  '$fallback',
+   *  '$default',
    * ]
    */
   paths?: string[]
@@ -74,23 +74,23 @@ export interface IListOptions {
 }
 ```
 
-### Force the Fallback Word List
+### Force the Default Word List
 
 ```javascript
 const { wordList } = require('@neopass/wordlist')
 
 const options = {
   /**
-   * Specify the `$fallback` alias as the only path to search.
+   * Specify the `$default` alias as the only path to search.
    */
   paths: [
-    // This alias resolves to the fallback list path at run time.
-    '$fallback'
+    // This alias resolves to the default list path at run time.
+    '$default'
   ]
 }
 
 wordList(options)
-  .then(list => console.log(list.length)) // 99541
+  .then(list => console.log(list.length)) // 102442
 ```
 
 ### Specify Alternate Word Lists
@@ -103,7 +103,7 @@ const options = {
   paths: [
     '/usr/share/dict/british-english',  // if found, use this one
     '/usr/share/dict/american-english', // else if found, use this one
-    '$fallback',  // else use this one
+    '$default',  // else use this one
   ]
 }
 
@@ -120,7 +120,7 @@ const { wordList } = require('@neopass/wordlist')
 const options = {
   combine: [
     '/usr/share/dict/words',
-    '$fallback',
+    '$default',
   ]
 }
 
@@ -128,7 +128,7 @@ wordList(options)
   .then(list => console.log(list.length)) // 335427
 ```
 
-**Important**: Using `combine` with `wordList`/`wordListSync` will result in duplicates where the lists overlap. It is recommended to use `combine` with `listBuilder` to control how words are added. For example, a `Set` can be used to eliminate duplicates from combined lists:
+**Important**: Using `combine` with `wordList`/`wordListSync` will result in duplicates if the lists overlap. It is recommended to use `combine` with `listBuilder` to control how words are added. For example, a `Set` can be used to eliminate duplicates from combined lists:
 
 ```javascript
 const { listBuilder } = require('@neopass/wordlist')
@@ -137,7 +137,7 @@ const { listBuilder } = require('@neopass/wordlist')
 const options = {
   combine: [
     '/usr/share/dict/words',
-    '$fallback',
+    '$default',
   ]
 }
 
@@ -152,24 +152,24 @@ builder(word => set.add(word))
   .then(() => console.log(set.size)) // 299569
 ```
 
-## The Fallback List
+## The Default List
 
-The fallback list is a ~100,000-word, PG-13, lower-case list taken from ancient and classic literature, with some other additions such as slang, neologisms, and geography.
+The default list is a ~100,000-word, PG-13, lower-case list taken from ancient and classic literature, with some other additions such as slang, neologisms, and geography.
 
-Suggestions for additions to the fallback list are welcome by [submitting an issue](https://github.com/neopass/wordlist/issues). Whole lists are definitely preferred to single-word suggestions, e.g., `"notable extraterrestrials"`, `"insects of upper polish honduras"`, or `"names of horses in modern literature"`.
+Suggestions for additions to the default list are welcome by [submitting an issue](https://github.com/neopass/wordlist/issues). Whole lists are definitely preferred to single-word suggestions, e.g., `"notable extraterrestrials"`, `"insects of upper polish honduras"`, or `"names of horses in modern literature"`.
 
-By default the fallback list alias, `$fallback` is the last item in the `paths` option:
+By default the fallback list alias, `$default` is the last item in the `paths` option:
 
 ```javascript
 export const defaultOptions: IListOptions = {
   paths: [
     '/usr/share/dict/words',
-    '$fallback'
+    '$default'
   ]
 }
 ```
 
-### Determine if the Fallback Will Be Used
+### Determine if the Default Will Be Used
 
 You can pass a `wordlist` options object to the `willUseFallback` function to determine if the given options will resolve to the fallback list:
 
@@ -179,7 +179,7 @@ import { willUseFallback } from '@neopass/wordlist'
 const options = {
   paths: [
     '/no/list/here',
-    '$fallback',
+    '$default',
   ]
 }
 
@@ -187,7 +187,7 @@ const willUse = willUseFallback(options)
 console.log(willUse) // true
 ```
 
-The `$fallback` alias is resolved to a path at run time.
+The `$default` alias resolves to a path at run time.
 
 This assures that if a system dictionary is not found, a word list will still be provided. Paths in the `paths` option are searched in order, with the first item that points to a file used as the word list.
 
