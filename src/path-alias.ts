@@ -1,15 +1,14 @@
 import fs from 'fs'
 import path from 'path'
-// import { addScowlAliases } from './add-scowl-aliases'
 
 /**
- * Add scowl source aliases to the map.
+ * Add SCOWL source aliases to the map.
  */
 function addScowlAliases(map: Map<string, string>) {
   const scowlPath = path.resolve(__dirname, '../scowl/words')
 
   if (!fs.existsSync(scowlPath)) {
-    return console.error('could not find scowl words at ' + scowlPath)
+    return console.error('could not find SCOWL words at ' + scowlPath)
   }
 
   const names = fs.readdirSync(scowlPath)
@@ -21,7 +20,7 @@ const aliasMap = new Map([
   ['$default', path.resolve(__dirname, '../default.txt')],
 ])
 
-// Add scowl aliases.
+// Add SCOWL aliases.
 addScowlAliases(aliasMap)
 
 /**
