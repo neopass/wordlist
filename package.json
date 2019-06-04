@@ -10,7 +10,7 @@
     "test-watch": "mocha --watch-extensions ts --watch",
     "watch": "tsc --watch",
     "word-gen": "./word-gen",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run test"
   },
   "repository": {
     "type": "git",
