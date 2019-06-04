@@ -31,7 +31,8 @@ const zero = `${zSpace}${zJoin}${z151}`
 const reZeroes = new RegExp(`[${zero}]`, 'g')
 
 // Split on spaces and punctuation.
-const reSplitter = new RegExp(String.raw`[\s/.?!,:;_()${dashes}\[\]{}~*=│|…-]+`)
+const splitter = String.raw`[\s/.?!,:;_()${dashes}\[\]{}~*=│|…-]`
+const reSplitter = new RegExp(`${splitter}+`)
 
 const qMarks = `'’‘"“”`
 const reQuotes = new RegExp(`^[${qMarks}]+|[${qMarks}]+$`, 'gi')
@@ -43,9 +44,9 @@ const reQuotes = new RegExp(`^[${qMarks}]+|[${qMarks}]+$`, 'gi')
  * @returns {void}
  */
 function eachWord(line, onWord) {
-  let words = line.split(reSplitter)
+  let words = line.split(reSplitter).filter(word => word.length > 0)
   words = words.map((word) => word.replace(reZeroes, '').replace(reQuotes, ''))
-  words.forEach((word) => { if (word.length > 0) { onWord(word) } })
+  words.forEach(onWord)
 }
 
 module.exports = eachWord
