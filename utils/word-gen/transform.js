@@ -7,10 +7,22 @@ const remove = /'s$/
  *
  * @returns {string}
  */
-function transform(word) {
+function preTransform(word) {
   return word
     .replace(apostrophe, `'`)
     .replace(remove, '')
 }
 
-module.exports = transform
+/**
+ * @param {string} word
+ *
+ * @returns {string}
+ */
+function postTransform(word) {
+  return word.toLowerCase()
+}
+
+module.exports = {
+  preTransform,
+  postTransform,
+}

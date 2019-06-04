@@ -7,7 +7,7 @@ const listBuilder = require('./list-builder')
 const accept = require('./accept')
 const rejections = require('./rejections')
 const options = require('./options')
-const transform = require('./transform')
+const { preTransform, postTransform } = require('./transform')
 
 /**
  * @typedef {Object} IArguments
@@ -61,15 +61,17 @@ async function wordGen() {
 
   try {
     wordList = await listBuilder(sourcePaths, (word) => {
-      word = transform(word)
+      word = preTransform(word)
       const accepted = accept(word)
       const rejected = reject(word)
+
       if (accepted && !rejected) {
-        return word.toLowerCase()
+        return postTransform(word)
       } else {
-        excludeSet.add(word.toLowerCase())
+        excludeSet.add(word)
       }
     })
+
     wordList.sort()
 
   } catch (error) {
