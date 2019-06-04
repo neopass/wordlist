@@ -2,7 +2,7 @@
 
 # wordlist
 
-Generate a word list from various sources, including [SCOWL](http://wordlist.aspell.net). Includes a default list of ~110,000 english words. Additional dictionary/wordlist paths can be configured via the [options](#options).
+Generate a word list from various sources, including [SCOWL](http://wordlist.aspell.net). Includes a default list of ~86,000 english words. Additional dictionary/wordlist paths can be configured via the [options](#options).
 
 System dictionaries can also be used, such as `/usr/share/dict/words`, `/usr/share/dict/british-english`, etc.
 
@@ -151,7 +151,7 @@ builder(word => set.add(word))
 
 ## The Default List
 
-The default list is a ~110,000-word, PG-13, lower-case list taken from english [SCOWL](http://wordlist.aspell.net) sources, with some other additions including slang.
+The default list is a ~86,000-word, PG-13, lower-case list taken from english [SCOWL](http://wordlist.aspell.net) sources, with some other additions including slang.
 
 Suggestions for additions to the default list are welcome by [submitting an issue](https://github.com/neopass/wordlist/issues). Whole lists are definitely preferred to single-word suggestions, e.g., `"notable extraterrestrials in history"`, `"insects of upper polish honduras"`, or `"names of horses in modern literature"`. _Suggestions for inappropriate word removal are also welcome (curse words, coarse words/slang, racial slurs, etc.)_.
 
@@ -177,11 +177,10 @@ const { listBuilder } = require('@neopass/wordlist')
 // Combine multiple lists from scowl.
 const options = {
   combine: [
-    '$english-words.80',
+    '$english-words.10',
+    '$english-words.20',
+    '$english-words.35',
     '$special-hacker.50',
-    'variant_1-words.95',
-    'variant_2-words.95',
-    'variant_3-words.95',
   ]
 }
 
@@ -193,7 +192,7 @@ const set = new Set()
 
 // Run the builder.
 builder(word => set.add(word))
-  .then(() => console.log(set.size)) // 140749
+  .then(() => console.log(set.size)) // 49130
 ```
 
 **Note:** SCOWL sources contain some words with apostrophes `'s` and also unicode characters. Care should be taken to deal with these depending on your needs. For example, we can transform words to remove any trailing `'s` characters and then only accept words that contain the letters a-z:
@@ -222,11 +221,10 @@ function accept(word) {
 // Combine multiple lists from scowl.
 const options = {
   combine: [
-    '$english-words.80',
+    '$english-words.10',
+    '$english-words.20',
+    '$english-words.35',
     '$special-hacker.50',
-    'variant_1-words.95',
-    'variant_2-words.95',
-    'variant_3-words.95',
   ]
 }
 
@@ -245,7 +243,7 @@ const _builder = builder((word) => {
   }
 })
 
-_builder.then(() => console.log(set.size)) // 136965
+_builder.then(() => console.log(set.size)) // 38714
 ```
 
 ### Scowl Aliases
@@ -410,9 +408,10 @@ root
     | +-- animals.txt
     | +-- slang.txt
     +-- scowl
-    | +-- english-words.80
+    | +-- english-words.10
+    | +-- english-words.20
+    | +-- english-words.35
     | +-- special-hacker.50
-    | +-- variant_1-words.95
     +-- exclusions
     | +-- patterns.txt
 ```
