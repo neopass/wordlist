@@ -1,6 +1,6 @@
 
 const apostrophe = /’/gi
-const remove = /'s$/
+const remove = /'s$/i
 
 /**
  * @param {string} word
