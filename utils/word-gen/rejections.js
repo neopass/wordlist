@@ -3,7 +3,7 @@
 const resolvePaths = require('./resolve-paths')
 const readStreams = require('./read-streams')
 
-const reExp = /\/.+\/[a-z]*/
+const reExp = /\/(.+)\/([a-z]*)/
 const reComment = /(?: |^)#.+$/
 
 /**
@@ -24,16 +24,17 @@ async function getExcludeData(paths) {
   const patterns = []
 
   const excludePaths = await resolvePaths(paths)
-  await readStreams(excludePaths, (word) => {
+  await readStreams(excludePaths, (line) => {
     // Handle comments.
-    const _word = word.replace(reComment, '').trim()
-    if (_word.length === 0) { return }
+    const pattern = line.replace(reComment, '').trim()
+    if (pattern.length === 0) { return }
 
-    if (reExp.test(_word)) {
+    if (reExp.test(pattern)) {
       // The 'word' is given as a pattern, e.g., /<pattern>/i.
-      patterns.push(eval(_word))
+      const [, exp, flags] = reExp.exec(pattern)
+      patterns.push(new RegExp(exp, flags))
     } else {
-      words.push(_word)
+      words.push(pattern)
     }
   })
 
