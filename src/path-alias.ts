@@ -4,7 +4,7 @@ import path from 'path'
 /**
  * Add SCOWL source aliases to the map.
  */
-function addScowlAliases(map: Map<string, string>) {
+function addScowlAliases(map: Map<string, string>): void {
   const scowlPath = path.resolve(__dirname, '../scowl/words')
 
   if (!fs.existsSync(scowlPath)) {
@@ -12,7 +12,7 @@ function addScowlAliases(map: Map<string, string>) {
   }
 
   const names = fs.readdirSync(scowlPath)
-  names.forEach(name => map.set(`$${name}`, path.resolve(__dirname, `../scowl/words/${name}`)))
+  names.forEach(name => map.set(`$${name}`,`${scowlPath}/${name}`))
 }
 
 // Create a map of { alias => path }.
