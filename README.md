@@ -2,7 +2,7 @@
 
 # wordlist
 
-Generate a word list from various sources, including [SCOWL](http://wordlist.aspell.net). Includes a default list of ~140,000 english words. Additional dictionary/wordlist paths can be configured via the [options](#options).
+Generate a word list from various sources, including [SCOWL](http://wordlist.aspell.net). Includes a default list of ~110,000 english words. Additional dictionary/wordlist paths can be configured via the [options](#options).
 
 System dictionaries can also be used, such as `/usr/share/dict/words`, `/usr/share/dict/british-english`, etc.
 
@@ -33,7 +33,7 @@ There are three functions available for creating word lists: `wordList`, `wordLi
 ```javascript
 const { wordList } = require('@neopass/wordlist')
 
-wordList().then(list => console.log(list.length)) // 142446
+wordList().then(list => console.log(list.length)) // 114011
 ```
 
 `wordListSync` builds and returns the list synchronously:
@@ -42,7 +42,7 @@ wordList().then(list => console.log(list.length)) // 142446
 const { wordListSync } = require('@neopass/wordlist')
 
 const list = wordListSync()
-console.log(list.length) // 142446
+console.log(list.length) // 114011
 ```
 
 `listBuilder` calls back each list word asynchronously:
@@ -54,7 +54,7 @@ const builder = listBuilder()
 const list = []
 
 builder(word => list.push(word))
-  .then(() => console.log(list.length)) // 142446
+  .then(() => console.log(list.length)) // 114011
 ```
 
 ## Options
@@ -151,7 +151,7 @@ builder(word => set.add(word))
 
 ## The Default List
 
-The default list is a ~140,000-word, PG-13, lower-case list taken from english [SCOWL](http://wordlist.aspell.net) sources, with some other additions including slang.
+The default list is a ~110,000-word, PG-13, lower-case list taken from english [SCOWL](http://wordlist.aspell.net) sources, with some other additions including slang.
 
 Suggestions for additions to the default list are welcome by [submitting an issue](https://github.com/neopass/wordlist/issues). Whole lists are definitely preferred to single-word suggestions, e.g., `"notable extraterrestrials in history"`, `"insects of upper polish honduras"`, or `"names of horses in modern literature"`. _Suggestions for inappropriate word removal are also welcome (curse words, coarse words/slang, racial slurs, etc.)_.
 
