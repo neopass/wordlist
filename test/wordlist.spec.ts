@@ -4,7 +4,7 @@ import { wordList, wordListSync } from '../src'
 describe('wordList', () => {
   it('works with no configuration', () => {
     return wordList().then((list) => {
-      assert.strictEqual(list.length, 114011)
+      assert.strictEqual(list.length, 86655)
     })
   })
 
@@ -30,7 +30,7 @@ describe('wordList', () => {
 describe('wordListSync', () => {
   it('works with no configuration', () => {
     const list = wordListSync()
-    assert.strictEqual(list.length, 114011)
+    assert.strictEqual(list.length, 86655)
   })
 
   it('allows paths overrides', () => {
