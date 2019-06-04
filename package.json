@@ -1,6 +1,6 @@
 {
   "name": "@neopass/wordlist",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Generate a word list from various sources, including SCOWL",
   "main": "lib/index.js",
   "scripts": {
