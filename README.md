@@ -28,23 +28,33 @@ npm install @neopass/wordlist
 
 There are three functions available for creating word lists: `wordList`, `wordListSync`, and `listBuilder`. The [default list](#the-default-list) is included by default, so no configuration of [options](#options) is required.
 
+`wordList` builds and returns the list asynchronously
+
 ```javascript
-const { wordList, wordListSync, listBuilder } = require('@neopass/wordlist')
+const { wordList } = require('@neopass/wordlist')
 
-// Build the list asynchronously.
 wordList().then(list => console.log(list.length)) // 142446
+```
 
-// Build the list synchronously.
+`wordListSync` builds and returns the list synchronously:
+
+```javascript
+const { wordListSync } = require('@neopass/wordlist')
+
 const list = wordListSync()
 console.log(list.length) // 142446
+```
 
-// Use the list builder.
+`listBuilder` calls back each list word asynchronously:
+
+```javascript
+const { listBuilder } = require('@neopass/wordlist')
+
 const builder = listBuilder()
-const set = new Set()
+const list = []
 
-// Convert words to lower case.
-builder((word) => set.add(word))
-  .then(() => console.log(set.size)) // 142446
+builder(word => list.push(word))
+  .then(() => console.log(list.length)) // 142446
 ```
 
 ## Options
@@ -74,7 +84,7 @@ export interface IListOptions {
 
 ### Specify Alternate Word Lists
 
-The `paths` specified in `options` are searched in order. The first list found is used. This allows for the use of system word lists with different names and/or locations on various platforms. A common location for the system word list is `/usr/share/dict/words`.
+The `paths` specified in `options` are searched in order and the first list found is used. This allows for the use of system word lists with different names and/or locations on various platforms. A common location for the system word list is `/usr/share/dict/words`.
 
 ```javascript
 const { wordList } = require('@neopass/wordlist')
@@ -95,7 +105,7 @@ wordList(options)
 
 ### Combine Lists
 
-Lists can be combined with the `combine` option:
+Lists can be combined into one with the `combine` option:
 
 ```javascript
 const { wordList } = require('@neopass/wordlist')
@@ -178,7 +188,7 @@ const options = {
 // Create a list builder.
 const builder = listBuilder(options)
 
-// Create a set to avoid duplicate words.
+// We'll add the words to a set.
 const set = new Set()
 
 // Run the builder.
@@ -186,15 +196,25 @@ builder(word => set.add(word))
   .then(() => console.log(set.size)) // 140749
 ```
 
-**Note:** SCOWL sources contain some words with apostrophes `'s` and also unicode characters. Care should be taken to deal with these depending on your needs. For example:
+**Note:** SCOWL sources contain some words with apostrophes `'s` and also unicode characters. Care should be taken to deal with these depending on your needs. For example, we can transform words to remove any trailing `'s` characters and then only accept words that contain the letters a-z:
 
 ```javascript
 const { listBuilder } = require('@neopass/wordlist')
 
 /**
+ * Remove trailig `'s` from words.
+ */
+function transform(word) {
+  if (word.endsWith(`'s`)) {
+    return word.slice(0, -2)
+  }
+  return word
+}
+
+/**
  * Determine if a word should be added.
  */
-function accepted(word) {
+function accept(word) {
   // Only accept words with characters a-z.
   return (/^[a-z]+$/i).test(word)
 }
@@ -217,13 +237,20 @@ const builder = listBuilder(options)
 const set = new Set()
 
 // Run the builder.
-builder((word) => { if (accepted(word)) { set.add(word) } })
-  .then(() => console.log(set.size)) // 128368
+const _builder = builder((word) => {
+  word = transform(word)
+
+  if (accept(word)) {
+    set.add(word)
+  }
+})
+
+_builder.then(() => console.log(set.size)) // 136965
 ```
 
 ### Scowl Aliases
 
-See the [SCOWL Readme](https://github.com/neopass/wordlist/blob/master/scowl/README) for a description of SCOWL sources. The below is a representative sample of the [available source aliases](https://github.com/neopass/wordlist/blob/master/scowl/words).
+A path alias is defined for every [SCOWL source list](https://github.com/neopass/wordlist/blob/master/scowl/words). SCOWL aliases consist of the `$` character followed by the [source file name](https://github.com/neopass/wordlist/blob/master/scowl/words). The below is a representative sample of the available source aliases.
 
 ```
 $american-abbreviations.70
@@ -233,40 +260,24 @@ $american-proper-names.95
 $american-upper.50
 $american-upper.80
 $american-upper.95
-$american-words.10
-$american-words.20
 $american-words.35
 $american-words.80
-$american-words.95
 $australian-abbreviations.35
 $australian-abbreviations.80
-$australian-abbreviations.95
 $australian-contractions.35
 $australian-proper-names.35
 $australian-proper-names.80
 $australian-proper-names.95
-$australian-upper.50
 $australian-upper.60
-$australian-upper.70
-$australian-upper.80
 $australian-upper.95
-$australian-words.10
-$australian-words.20
 $australian-words.35
-$australian-words.40
-$australian-words.50
-$australian-words.55
-$australian-words.60
-$australian-words.70
 $australian-words.80
-$australian-words.95
 $australian_variant_1-abbreviations.95
 $australian_variant_1-contractions.60
 $australian_variant_1-proper-names.80
 $australian_variant_1-proper-names.95
 $australian_variant_1-upper.80
 $australian_variant_1-upper.95
-$australian_variant_1-words.10
 $australian_variant_1-words.80
 $australian_variant_1-words.95
 $australian_variant_2-abbreviations.80
@@ -275,21 +286,17 @@ $australian_variant_2-contractions.50
 $australian_variant_2-contractions.70
 $australian_variant_2-proper-names.95
 $australian_variant_2-upper.80
-$australian_variant_2-words.10
 $australian_variant_2-words.55
 $australian_variant_2-words.95
 $british-abbreviations.35
 $british-abbreviations.80
-$british-abbreviations.95
 $british-proper-names.80
 $british-proper-names.95
 $british-upper.50
-$british-upper.80
 $british-upper.95
 $british-words.10
 $british-words.20
 $british-words.35
-$british-words.80
 $british-words.95
 $british_variant_1-abbreviations.55
 $british_variant_1-contractions.35
@@ -301,7 +308,6 @@ $british_variant_2-abbreviations.70
 $british_variant_2-contractions.50
 $british_variant_2-upper.35
 $british_variant_2-upper.95
-$british_variant_2-words.10
 $british_variant_2-words.80
 $british_variant_2-words.95
 $british_z-abbreviations.80
@@ -332,21 +338,15 @@ $canadian_variant_2-upper.35
 $canadian_variant_2-upper.80
 $canadian_variant_2-words.35
 $canadian_variant_2-words.80
-$english-abbreviations.10
 $english-abbreviations.20
-$english-abbreviations.35
 $english-abbreviations.80
-$english-abbreviations.95
 $english-contractions.35
 $english-contractions.80
 $english-contractions.95
 $english-proper-names.35
 $english-proper-names.80
-$english-upper.10
 $english-upper.35
-$english-upper.50
 $english-upper.80
-$english-upper.95
 $english-words.80
 $english-words.95
 $special-hacker.50
@@ -358,8 +358,6 @@ $variant_1-proper-names.80
 $variant_1-proper-names.95
 $variant_1-upper.35
 $variant_1-upper.80
-$variant_1-upper.95
-$variant_1-words.10
 $variant_1-words.20
 $variant_1-words.80
 $variant_2-abbreviations.70
@@ -368,17 +366,15 @@ $variant_2-contractions.50
 $variant_2-contractions.70
 $variant_2-upper.35
 $variant_2-upper.95
-$variant_2-words.20
 $variant_2-words.35
 $variant_2-words.95
 $variant_3-abbreviations.40
 $variant_3-abbreviations.95
-$variant_3-words.10
 $variant_3-words.35
 $variant_3-words.95
 ```
 
-SCOWL aliases consist of the `$` character followed by the [source file name](https://github.com/neopass/wordlist/blob/master/scowl/words).
+See the [SCOWL Readme](https://github.com/neopass/wordlist/blob/master/scowl/README) for a description of SCOWL sources.
 
 ## Create a Custom Word List File
 
@@ -407,7 +403,7 @@ First, set up a directory of book and/or word list files, for example:
 root
   +-- data
     +-- books
-    | +-- modern ship building.txt
+    | +-- modern steam engine design.txt
     | +-- how to skin a rabbit.txt
     +-- lists
     | +-- names.txt
