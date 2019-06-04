@@ -27,10 +27,11 @@ const hyphen = '\u2010'
 const dashes = `${figDash}${emDash}${enDash}${hBar}${sDash}${hyphen}`
 const zero = `${zSpace}${zJoin}${z151}`
 
-// Split on spaces and punctuation.
-const reSplitter = new RegExp(String.raw`[\[\]\s/.?!,:;(){}~*_=│|…${dashes}-]+`)
-
+// Zero-width characters.
 const reZeroes = new RegExp(`[${zero}]`, 'g')
+
+// Split on spaces and punctuation.
+const reSplitter = new RegExp(String.raw`[\s/.?!,:;_()${dashes}\[\]{}~*=│|…-]+`)
 
 const qMarks = `'’‘"“”`
 const reQuotes = new RegExp(`^[${qMarks}]+|[${qMarks}]+$`, 'gi')
