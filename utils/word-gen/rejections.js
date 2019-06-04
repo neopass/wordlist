@@ -5,6 +5,7 @@ const readStreams = require('./read-streams')
 
 const reExp = /\/(.+)\/([a-z]*)/
 const reComment = /(?: |^)#.+$/
+const reAlpha = /^[a-z]+$/i
 
 /**
  *
@@ -34,7 +35,11 @@ async function getExcludeData(paths) {
       const [, exp, flags] = reExp.exec(pattern)
       patterns.push(new RegExp(exp, flags))
     } else {
-      words.push(pattern)
+      if (reAlpha.test(pattern)) {
+        words.push(pattern)
+      } else {
+        console.log(`WARNING: string ${pattern} not recogized as a word or expression`)
+      }
     }
   })
 
