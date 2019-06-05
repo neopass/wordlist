@@ -6,11 +6,10 @@
   "scripts": {
     "build": "tsc && babel lib --out-dir lib",
     "clean": "rm -rf lib",
-    "test": "npm run clean && npm run build && mocha",
+    "test": "mocha",
     "test-watch": "mocha --watch-extensions ts --watch",
     "watch": "tsc --watch",
-    "word-gen": "./word-gen",
-    "prepublishOnly": "npm run clean && npm run test"
+    "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "repository": {
     "type": "git",
