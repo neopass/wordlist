@@ -1,5 +1,5 @@
---require @babel/register
 --require ts-node/register
 --require source-map-support/register
+--require @babel/register
 --recursive
 test/**/*.spec.ts
