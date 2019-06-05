@@ -1467,7 +1467,6 @@ agonizes
 agonizing
 agonizingly
 agony
-agoraphobics
 agrarian
 agrarianism
 agrarians
@@ -55929,7 +55928,9 @@ phlox
 phloxes
 phlyctaena
 phlyctena
+phobia
 phobias
+phobic
 phobics
 phocine
 phocoenine
@@ -76656,7 +76657,6 @@ technologist
 technologists
 technology
 technophile
-technophobes
 techs
 tectonic
 tectonics
@@ -86272,7 +86272,6 @@ x
 xenarthran
 xenia
 xenon
-xenophobes
 xerographic
 xerography
 xerox
