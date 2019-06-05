@@ -33,7 +33,7 @@ There are three functions available for creating word lists: `wordList`, `wordLi
 ```javascript
 const { wordList } = require('@neopass/wordlist')
 
-wordList().then(list => console.log(list.length)) // 114011
+wordList().then(list => console.log(list.length)) // 86749
 ```
 
 `wordListSync` builds and returns the list synchronously:
@@ -42,7 +42,7 @@ wordList().then(list => console.log(list.length)) // 114011
 const { wordListSync } = require('@neopass/wordlist')
 
 const list = wordListSync()
-console.log(list.length) // 114011
+console.log(list.length) // 86749
 ```
 
 `listBuilder` calls back each list word asynchronously:
@@ -54,7 +54,7 @@ const builder = listBuilder()
 const list = []
 
 builder(word => list.push(word))
-  .then(() => console.log(list.length)) // 114011
+  .then(() => console.log(list.length)) // 86749
 ```
 
 ## Options
