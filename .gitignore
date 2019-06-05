@@ -68,7 +68,6 @@ typings/
 
 # Build files
 /lib
-/src/*.js
 
 # Data files
 /data
