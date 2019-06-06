@@ -1,5 +1,5 @@
 
-export type Mutator = (word: string) => string|string[]|boolean
+export type Mutator = (word: string) => boolean|string|string[]
 
 export interface IListOptions {
   /**
