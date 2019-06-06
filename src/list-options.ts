@@ -1,5 +1,5 @@
 
-type Transformer = (word: string) => string|string[]|boolean
+export type Mutator = (word: string) => string|string[]|boolean
 
 export interface IListOptions {
   /**
@@ -18,9 +18,9 @@ export interface IListOptions {
   combine?: string[]
   /**
    * Mutate the list by filtering on lower-case words, converting to
-   * lower case, or applying a custom transformer.
+   * lower case, or applying a custom mutator function.
    */
-  mutator?: 'only-lower'|'to-lower'|Transformer
+  mutator?: 'only-lower'|'to-lower'|Mutator
 }
 
 /**
