@@ -27,6 +27,8 @@ function getList(options: IListOptions, path: string) {
 
   if (typeof mutator === 'function') {
     return list.reduce((list, word) => {
+      if (word.length === 0) { return list }
+
       const result = mutator(word)
 
       if (typeof result === 'string') {
