@@ -5,10 +5,24 @@ import { wordList, wordListSync, IListOptions } from '../src'
 const testWordsPath = path.resolve(__dirname, '../test/data/words.txt')
 
 /**
- * Custom mutator function.
+ * Custom mutator function (splits hyphenated words).
  */
 function splitMutator(word: string): string[] {
   return word.split('-').filter(word => word.length > 0)
+}
+
+/**
+ * Custom mutator function (filters for upper-case words).
+ */
+function upperMutator(word: string): boolean {
+  return /^[A-Z]+$/.test(word)
+}
+
+/**
+ * Custom mutator function (makes words possessive).
+ */
+function possessiveMutator(word: string): string {
+  return `${word}'s`
 }
 
 describe('wordList', () => {
@@ -58,7 +72,43 @@ describe('wordList', () => {
     assert.strictEqual(list.length, 2)
   })
 
-  it('works with a custom mutator function', async () => {
+  it('works with a custom mutator function (boolean)', async () => {
+    let options: IListOptions
+    let list: string[]
+
+    options = { mutator: upperMutator, combine: [testWordsPath] }
+    list = await wordList(options)
+    assert.strictEqual(list.length, 3)
+    assert(list.includes('ABC'))
+    assert(list.includes('PQR'))
+    assert(list.includes('YZ'))
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = await wordList(options)
+    assert.strictEqual(list.length, 3)
+    assert(list.includes('ABC'))
+    assert(list.includes('PQR'))
+    assert(list.includes('YZ'))
+  })
+
+  it('works with a custom mutator function (string)', async () => {
+    let options: IListOptions
+    let list: string[]
+
+    options = { mutator: possessiveMutator, combine: [testWordsPath] }
+    list = await wordList(options)
+    assert.strictEqual(list.length, 8)
+    assert(list.includes(`ABC's`))
+    assert(list.includes(`Def's`))
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = await wordList(options)
+    assert.strictEqual(list.length, 8)
+    assert(list.includes(`ABC's`))
+    assert(list.includes(`Def's`))
+  })
+
+  it('works with a custom mutator function (string[])', async () => {
     let options: IListOptions
     let list: string[]
 
@@ -123,7 +173,43 @@ describe('wordListSync', () => {
     assert.strictEqual(list.length, 2)
   })
 
-  it('works with a custom mutator function', () => {
+  it('works with a custom mutator function (boolean)', () => {
+    let options: IListOptions
+    let list: string[]
+
+    options = { mutator: upperMutator, combine: [testWordsPath] }
+    list = wordListSync(options)
+    assert.strictEqual(list.length, 3)
+    assert(list.includes('ABC'))
+    assert(list.includes('PQR'))
+    assert(list.includes('YZ'))
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = wordListSync(options)
+    assert.strictEqual(list.length, 3)
+    assert(list.includes('ABC'))
+    assert(list.includes('PQR'))
+    assert(list.includes('YZ'))
+  })
+
+  it('works with a custom mutator function (string)', () => {
+    let options: IListOptions
+    let list: string[]
+
+    options = { mutator: possessiveMutator, combine: [testWordsPath] }
+    list = wordListSync(options)
+    assert.strictEqual(list.length, 8)
+    assert(list.includes(`ABC's`))
+    assert(list.includes(`Def's`))
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = wordListSync(options)
+    assert.strictEqual(list.length, 8)
+    assert(list.includes(`ABC's`))
+    assert(list.includes(`Def's`))
+  })
+
+  it('works with a custom mutator function (string[])', () => {
     let options: IListOptions
     let list: string[]
 
