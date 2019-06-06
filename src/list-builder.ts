@@ -26,7 +26,9 @@ function processStreams(options: IListOptions, paths: string[], onWord: OnWord):
 
       // If the result is an array, conditionally add all words.
       if (Array.isArray(result)) {
-        return result.filter(w => typeof w === 'string').forEach(w => onWord(w))
+        return result
+          .filter(word => typeof word === 'string' && word.length > 0)
+          .forEach(word => onWord(word))
       }
 
       // If the resutl is true, add it to the list.
