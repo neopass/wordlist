@@ -25,8 +25,8 @@ function getList(options: IListOptions, path: string) {
   const list = buffer.toString().split('\n')
   const mutator = options.mutator
 
+  // Run the custom mutator for every word.
   if (typeof mutator === 'function') {
-    // Run the custom mutator for every word.
     return list.reduce((list, word) => {
       // Ignore zero-length words.
       if (word.length === 0) { return list }
@@ -35,18 +35,18 @@ function getList(options: IListOptions, path: string) {
       const result = mutator(word)
 
       // If the result is a string, add it to the list.
-      if (typeof result === 'string') {
+      if (typeof result === 'string' && result.length > 0) {
         list.push(result)
 
       // If the result is an array, conditionally add all words to the list.
       } else if (Array.isArray(result)) {
         result
           // The word must be a non-zero-length string.
-          .filter(w => typeof w === 'string' && w.length > 0)
-          .forEach(w => list.push(w))
+          .filter(word => typeof word === 'string' && word.length > 0)
+          .forEach(word => list.push(word))
 
       // If the result is `true`, add the word.
-      } else if (result === true) {
+      } else if (result === true && word.length > 0) {
         list.push(word)
       }
 
