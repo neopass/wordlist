@@ -26,19 +26,26 @@ function getList(options: IListOptions, path: string) {
   const mutator = options.mutator
 
   if (typeof mutator === 'function') {
+    // Run the custom mutator for every word.
     return list.reduce((list, word) => {
+      // Ignore zero-length words.
       if (word.length === 0) { return list }
 
+      // Run the custom mutator.
       const result = mutator(word)
 
+      // If the result is a string, add it to the list.
       if (typeof result === 'string') {
         list.push(result)
 
+      // If the result is an array, conditionally add all words to the list.
       } else if (Array.isArray(result)) {
         result
+          // The word must be a non-zero-length string.
           .filter(w => typeof w === 'string' && w.length > 0)
           .forEach(w => list.push(w))
 
+      // If the result is `true`, add the word.
       } else if (result === true) {
         list.push(word)
       }
@@ -47,14 +54,17 @@ function getList(options: IListOptions, path: string) {
     }, [] as string[])
   }
 
+  // Only allow lower-case words of characters [a-z].
   if (mutator === 'only-lower') {
     return list.filter(word => reAlpha.test(word))
   }
 
+  // Convert words to lower case.
   if (mutator === 'to-lower') {
     return transform(list)
   }
 
+  // Filter out zero-length words.
   return list.filter((word => word.length > 0))
 }
 
