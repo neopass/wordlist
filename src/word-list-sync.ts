@@ -33,7 +33,9 @@ function getList(options: IListOptions, path: string) {
         list.push(result)
 
       } else if (Array.isArray(result)) {
-        result.filter(w => typeof w === 'string').forEach(w => list.push(w))
+        result
+          .filter(w => typeof w === 'string' && w.length > 0)
+          .forEach(w => list.push(w))
 
       } else if (result === true) {
         list.push(word)
