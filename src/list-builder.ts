@@ -14,9 +14,9 @@ export type ListBuilder = (onWord: OnWord) => Promise<void>
 function processStreams(options: IListOptions, paths: string[], onWord: OnWord): Promise<void> {
   const mutator = options.mutator
 
+  // Run the custom mutator for every word.
   if (typeof mutator === 'function') {
     return readStreams(paths, (word) => {
-      // Run the custom mutator.
       const result = mutator(word)
 
       // If the result is a string, add it to the list.
