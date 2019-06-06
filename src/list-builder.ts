@@ -16,28 +16,34 @@ function processStreams(options: IListOptions, paths: string[], onWord: OnWord):
 
   if (typeof mutator === 'function') {
     return readStreams(paths, (word) => {
+      // Run the custom mutator.
       const result = mutator(word)
 
+      // If the result is a string, add it to the list.
       if (typeof result === 'string') {
         return onWord(result)
       }
 
+      // If the result is an array, conditionally add all words.
       if (Array.isArray(result)) {
         return result.filter(w => typeof w === 'string').forEach(w => onWord(w))
       }
 
+      // If the resutl is true, add it to the list.
       if (result === true) {
         return onWord(word)
       }
     })
   }
 
+  // Only allow lower-case words of [a-z].
   if (mutator === 'only-lower') {
     return readStreams(paths, (word) => {
       if (reAlpha.test(word)) { onWord(word) }
     })
   }
 
+  // Convert words to lower case.
   if (mutator === 'to-lower') {
     return readStreams(paths, (word) => {
       onWord(word.toLowerCase())
