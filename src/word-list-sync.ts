@@ -23,12 +23,31 @@ function transform(list: string[]) {
 function getList(options: IListOptions, path: string) {
   const buffer = fs.readFileSync(path)
   const list = buffer.toString().split('\n')
+  const mutator = options.mutator
 
-  if (options.lowerCaseOnly) {
+  if (typeof mutator === 'function') {
+    return list.reduce((list, word) => {
+      const result = mutator(word)
+
+      if (typeof result === 'string') {
+        list.push(result)
+
+      } else if (Array.isArray(result)) {
+        result.filter(w => typeof w === 'string').forEach(w => list.push(w))
+
+      } else if (result === true) {
+        list.push(word)
+      }
+
+      return list
+    }, [] as string[])
+  }
+
+  if (mutator === 'only-lower') {
     return list.filter(word => reAlpha.test(word))
   }
 
-  if (options.toLowerCase) {
+  if (mutator === 'to-lower') {
     return transform(list)
   }
 

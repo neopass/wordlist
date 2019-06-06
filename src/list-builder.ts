@@ -12,29 +12,33 @@ export type ListBuilder = (onWord: OnWord) => Promise<void>
  * Process read streams depending on options.
  */
 function processStreams(options: IListOptions, paths: string[], onWord: OnWord): Promise<void> {
-  // const transform = options.transform
+  const mutator = options.mutator
 
-  // if (typeof transform === 'function') {
-  //   return readStreams(paths, (word) => {
-  //     const result = transform(word)
+  if (typeof mutator === 'function') {
+    return readStreams(paths, (word) => {
+      const result = mutator(word)
 
-  //     if (typeof result === 'string') {
-  //       return onWord(result)
-  //     }
+      if (typeof result === 'string') {
+        return onWord(result)
+      }
 
-  //     if (result === true) {
-  //       return onWord(word)
-  //     }
-  //   })
-  // }
+      if (Array.isArray(result)) {
+        return result.filter(w => typeof w === 'string').forEach(w => onWord(w))
+      }
 
-  if (options.lowerCaseOnly) {
+      if (result === true) {
+        return onWord(word)
+      }
+    })
+  }
+
+  if (mutator === 'only-lower') {
     return readStreams(paths, (word) => {
       if (reAlpha.test(word)) { onWord(word) }
     })
   }
 
-  if (options.toLowerCase) {
+  if (mutator === 'to-lower') {
     return readStreams(paths, (word) => {
       onWord(word.toLowerCase())
     })

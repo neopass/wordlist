@@ -1,4 +1,6 @@
 
+type Transformer = (word: string) => string|string[]|boolean
+
 export interface IListOptions {
   /**
    * Word list paths to search for in order. Only the first
@@ -15,13 +17,10 @@ export interface IListOptions {
    */
   combine?: string[]
   /**
-   *
+   * Mutate the list by filtering on lower-case words, converting to
+   * lower case, or applying a custom transformer.
    */
-  lowerCaseOnly?: boolean
-  /**
-   *
-   */
-  toLowerCase?: boolean
+  mutator?: 'only-lower'|'to-lower'|Transformer
 }
 
 /**
@@ -29,6 +28,4 @@ export interface IListOptions {
  */
 export const defaultOptions: IListOptions = {
   paths: [ '$default' ],
-  lowerCaseOnly: false,
-  toLowerCase: false,
 }

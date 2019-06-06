@@ -4,6 +4,13 @@ import { wordList, wordListSync, IListOptions } from '../src'
 
 const testWordsPath = path.resolve(__dirname, '../test/data/words.txt')
 
+/**
+ * Custom mutator function.
+ */
+function splitMutator(word: string): string[] {
+  return word.split('-').filter(word => word.length > 0)
+}
+
 describe('wordList', () => {
   it('works with no configuration', async () => {
     const list = await wordList()
@@ -25,42 +32,47 @@ describe('wordList', () => {
     assert.strictEqual(list.length, 2014)
   })
 
-  it('works with toLowerCase option', async () => {
-    let options: IListOptions = {
-      toLowerCase: true,
-      combine: [testWordsPath],
-    }
+  it(`works with 'to-lower' mutator option`, async () => {
+    let options: IListOptions
+    let list: string[]
 
-    let list = await wordList(options)
-    assert.strictEqual(list.length, 3)
-    assert(list.includes('abc'))
-    assert(list.includes('def'))
-    assert(list.includes('ghi'))
-
-    options = {...options, ...{ combine: undefined, paths: [testWordsPath]}}
-
+    options = { mutator: 'to-lower', combine: [testWordsPath] }
     list = await wordList(options)
-    assert.strictEqual(list.length, 3)
-    assert(list.includes('abc'))
-    assert(list.includes('def'))
-    assert(list.includes('ghi'))
+    assert.strictEqual(list.length, 8)
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = await wordList(options)
+    assert.strictEqual(list.length, 8)
   })
 
-  it('works with lowerCaseOnly option', async () => {
-    let options: IListOptions = {
-      lowerCaseOnly: true,
-      combine: [testWordsPath],
-    }
+  it(`works with 'only-lower' mutator option`, async () => {
+    let options: IListOptions
+    let list: string[]
 
-    let list = await wordList(options)
-    assert.strictEqual(list.length, 1)
-    assert(list.includes('ghi'))
-
-    options = {...options, ...{ combine: undefined, paths: [testWordsPath]}}
-
+    options = { mutator: 'only-lower', combine: [testWordsPath] }
     list = await wordList(options)
-    assert.strictEqual(list.length, 1)
-    assert(list.includes('ghi'))
+    assert.strictEqual(list.length, 2)
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = await wordList(options)
+    assert.strictEqual(list.length, 2)
+  })
+
+  it('works with a custom mutator function', async () => {
+    let options: IListOptions
+    let list: string[]
+
+    options = { mutator: splitMutator, combine: [testWordsPath] }
+    list = await wordList(options)
+    assert.strictEqual(list.length, 9)
+    assert(list.includes('jkl'))
+    assert(list.includes('mno'))
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = await wordList(options)
+    assert.strictEqual(list.length, 9)
+    assert(list.includes('jkl'))
+    assert(list.includes('mno'))
   })
 })
 
@@ -85,41 +97,46 @@ describe('wordListSync', () => {
     assert.strictEqual(list.length, 2014)
   })
 
-  it('works with toLowerCase option', () => {
-    let options: IListOptions = {
-      toLowerCase: true,
-      combine: [testWordsPath],
-    }
+  it(`works with 'to-lower' mutator option`, () => {
+    let options: IListOptions
+    let list: string[]
 
-    let list = wordListSync(options)
-    assert.strictEqual(list.length, 3)
-    assert(list.includes('abc'))
-    assert(list.includes('def'))
-    assert(list.includes('ghi'))
-
-    options = {...options, ...{ combine: undefined, paths: [testWordsPath]}}
-
+    options = { mutator: 'to-lower', combine: [testWordsPath] }
     list = wordListSync(options)
-    assert.strictEqual(list.length, 3)
-    assert(list.includes('abc'))
-    assert(list.includes('def'))
-    assert(list.includes('ghi'))
+    assert.strictEqual(list.length, 8)
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = wordListSync(options)
+    assert.strictEqual(list.length, 8)
   })
 
-  it('works with lowerCaseOnly option', () => {
-    let options: IListOptions = {
-      lowerCaseOnly: true,
-      combine: [testWordsPath],
-    }
+  it(`works with 'only-lower' mutator option`, () => {
+    let options: IListOptions
+    let list: string[]
 
-    let list = wordListSync(options)
-    assert.strictEqual(list.length, 1)
-    assert(list.includes('ghi'))
-
-    options = {...options, ...{ combine: undefined, paths: [testWordsPath]}}
-
+    options = { mutator: 'only-lower', combine: [testWordsPath] }
     list = wordListSync(options)
-    assert.strictEqual(list.length, 1)
-    assert(list.includes('ghi'))
+    assert.strictEqual(list.length, 2)
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = wordListSync(options)
+    assert.strictEqual(list.length, 2)
+  })
+
+  it('works with a custom mutator function', () => {
+    let options: IListOptions
+    let list: string[]
+
+    options = { mutator: splitMutator, combine: [testWordsPath] }
+    list = wordListSync(options)
+    assert.strictEqual(list.length, 9)
+    assert(list.includes('jkl'))
+    assert(list.includes('mno'))
+
+    options = { ...options, combine: undefined, paths: [testWordsPath] }
+    list = wordListSync(options)
+    assert.strictEqual(list.length, 9)
+    assert(list.includes('jkl'))
+    assert(list.includes('mno'))
   })
 })
