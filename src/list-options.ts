@@ -14,13 +14,21 @@ export interface IListOptions {
    * Word list paths to combine. All found files are used.
    */
   combine?: string[]
+  /**
+   *
+   */
+  lowerCaseOnly?: boolean
+  /**
+   *
+   */
+  toLowerCase?: boolean
 }
 
 /**
  *
  */
 export const defaultOptions: IListOptions = {
-  paths: [
-    '$default'
-  ]
+  paths: [ '$default' ],
+  lowerCaseOnly: false,
+  toLowerCase: false,
 }

@@ -2,13 +2,47 @@ import fs from 'fs'
 import { IListOptions, defaultOptions } from './list-options'
 import { pathAlias } from './path-alias'
 import { isFile } from './is-file'
+import { reAlpha } from './constants'
+
+/**
+ *
+ */
+function transform(list: string[]) {
+  const _list: string[] = []
+  list.forEach((word) => {
+    if (word.length > 0) {
+      _list.push(word.toLowerCase())
+    }
+  })
+  return _list
+}
+
+/**
+ *
+ */
+function getList(options: IListOptions, path: string) {
+  const buffer = fs.readFileSync(path)
+  const list = buffer.toString().split('\n')
+
+  if (options.lowerCaseOnly) {
+    return list.filter(word => reAlpha.test(word))
+  }
+
+  if (options.toLowerCase) {
+    return transform(list)
+  }
+
+  return list.filter((word => word.length > 0))
+}
 
 /**
  * Build a word list by combining files in `combined`.
  */
-function buildCombined(combined: string[]): string[] {
+function buildCombined(options: IListOptions): string[] {
+  const combine = <string[]>options.combine
+
   // Take all paths that point to a file.
-  const paths = combined
+  const paths = combine
     .map(path => pathAlias(path))
     .filter(path => isFile(path))
 
@@ -18,8 +52,7 @@ function buildCombined(combined: string[]): string[] {
 
   // Comine all files into a single list.
   const list = paths.reduce((_list, path) => {
-    const buffer = fs.readFileSync(path)
-    const words = buffer.toString().split('\n').filter(w => w.length > 0)
+    const words = getList(options, path)
     words.forEach(word => _list.push(word))
     return _list
   }, [] as string[])
@@ -30,7 +63,9 @@ function buildCombined(combined: string[]): string[] {
 /**
  * Build a word list from the first found file in `paths`.
  */
-function buildSingle(paths: string[]): string[] {
+function buildSingle(options: IListOptions): string[] {
+  const paths = <string[]>options.paths
+
   // Take the first path that points to a file.
   const path = paths
     .map(path => pathAlias(path))
@@ -40,10 +75,7 @@ function buildSingle(paths: string[]): string[] {
     throw new Error('no file found in "paths"')
   }
 
-  const buffer = fs.readFileSync(path)
-  const list = buffer.toString().split('\n').filter(w => w.length > 0)
-
-  return list
+  return getList(options, path)
 }
 
 /**
@@ -53,11 +85,11 @@ export function wordListSync(options?: IListOptions): string[] {
   const opts = {...defaultOptions, ...options}
 
   if (Array.isArray(opts.combine) && opts.combine.length > 0) {
-    return buildCombined(opts.combine)
+    return buildCombined(opts)
   }
 
   if (Array.isArray(opts.paths) && opts.paths.length > 0) {
-    return buildSingle(opts.paths)
+    return buildSingle(opts)
   }
 
   throw new Error('no paths specified in options')
