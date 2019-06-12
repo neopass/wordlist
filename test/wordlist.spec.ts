@@ -14,8 +14,10 @@ function splitMutator(word: string): string[] {
 /**
  * Custom mutator function (filters for upper-case words).
  */
-function upperMutator(word: string): boolean {
-  return /^[A-Z]+$/.test(word)
+function upperMutator(word: string): string|void {
+  if (/^[A-Z]+$/.test(word)) {
+    return word
+  }
 }
 
 /**
