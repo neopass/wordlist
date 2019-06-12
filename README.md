@@ -2,9 +2,11 @@
 
 # wordlist
 
-Generate a word list from various sources, including [SCOWL](http://wordlist.aspell.net). Includes a default list of ~86,000 english words. Additional dictionary/wordlist paths can be configured via the [options](#options).
+Generate a word list from various sources, including system dictionaries and [SCOWL](http://wordlist.aspell.net).
 
-System dictionaries can also be used, such as `/usr/share/dict/words`, `/usr/share/dict/british-english`, etc.
+Includes a default list of ~86,000 english words.
+
+Additional dictionary/wordlist paths can be configured via the [options](#options). System dictionaries exist at locations such as `/usr/share/dict/words`, `/usr/share/dict/british-english`, etc.
 
 ```bash
 npm install @neopass/wordlist
@@ -87,15 +89,13 @@ export interface IListOptions {
 
 `combine`: Allows multiple lists to be [combined](#combine-lists) into one.
 
-`mutator`:
+`mutator`: mutates the list depending on the value provided.
 - `only-lower`: Filter out words that are not comprised of only characters `[a-z]`.
 - `to-lower`: Convert words to lower case.
-- `Mutator`: `(word: string) => boolean|string|string[]`: a custom function that receives a word and returns one or more words, or a `boolean`. Used for custom transformation of words in the list. Return values:
-  - `true`: the word is added to the list.
+- `Mutator`: `(word: string) => string|string[]|void`: a custom function that receives a word and returns one or more words, or `undefined`. Used for custom transformation/exclusion of words in the list. Return values:
   - `string`: the returned `string` is added to the list.
   - `string[]`: all returned `string`s are added to the list.
-
-  If any other value is returned (such as `false`) the word is _not_ added.
+  - `undefined`: the word is not added.
 
 ```javascript
 /**
@@ -480,7 +480,7 @@ Tongs
 # Exclude patterns (as regular expressions):
 /^fudge/i   # words starting with 'fudge'
 /crikey/i   # words containing 'crikey'
-/shazam$/   # words ending in 'shazam'
+/shazam$/   # words ending in lowercase 'shazam'
 /^BLASTED$/ # exact match for uppercase 'blasted'
 ```
 
@@ -519,5 +519,4 @@ about the suitability of this array for any purpose. It is provided
 "as is" without express or implied warranty.
 ```
 
-[Full License](https://github.com/neopass/wordlist/blob/master/scowl/Copyright)
-[SCOWL](http://wordlist.aspell.net)
+[Full License](https://github.com/neopass/wordlist/blob/master/scowl/Copyright) | [SCOWL](http://wordlist.aspell.net)
