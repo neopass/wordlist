@@ -3,6 +3,7 @@ import { IListOptions, defaultOptions } from './list-options'
 import { pathAlias } from './path-alias'
 import { isFile } from './is-file'
 import { reAlpha } from './constants'
+import { mutatorResult } from './mutator-result'
 
 /**
  *
@@ -32,22 +33,10 @@ function getList(options: IListOptions, path: string) {
       if (word.length === 0) { return list }
 
       // Run the custom mutator.
-      const result = mutator(word)
+      const result = mutatorResult(mutator, word)
 
-      // If the result is a string, add it to the list.
-      if (typeof result === 'string' && result.length > 0) {
-        list.push(result)
-
-      // If the result is an array, conditionally add all words to the list.
-      } else if (Array.isArray(result)) {
-        result
-          // The word must be a non-zero-length string.
-          .filter(word => typeof word === 'string' && word.length > 0)
-          .forEach(word => list.push(word))
-
-      // If the result is `true`, add the word.
-      } else if (result === true && word.length > 0) {
-        list.push(word)
+      if (Array.isArray(result)) {
+        list.push.apply(list, result)
       }
 
       return list

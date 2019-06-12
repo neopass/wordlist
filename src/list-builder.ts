@@ -3,6 +3,7 @@ import { isFile } from './is-file'
 import { readStreams } from './read-streams'
 import { pathAlias } from './path-alias'
 import { reAlpha } from './constants'
+import { mutatorResult } from './mutator-result'
 
 export type OnWord = (word: string) => void
 
@@ -17,23 +18,11 @@ function processStreams(options: IListOptions, paths: string[], onWord: OnWord):
   // Run the custom mutator for every word.
   if (typeof mutator === 'function') {
     return readStreams(paths, (word) => {
-      const result = mutator(word)
+      // Run the custom mutator.
+      const result = mutatorResult(mutator, word)
 
-      // If the result is a string, add it to the list.
-      if (typeof result === 'string') {
-        return onWord(result)
-      }
-
-      // If the result is an array, conditionally add all words.
       if (Array.isArray(result)) {
-        return result
-          .filter(word => typeof word === 'string' && word.length > 0)
-          .forEach(word => onWord(word))
-      }
-
-      // If the resutl is true, add it to the list.
-      if (result === true) {
-        return onWord(word)
+        result.forEach(onWord)
       }
     })
   }
