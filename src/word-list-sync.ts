@@ -9,13 +9,12 @@ import { mutatorResult } from './mutator-result'
  *
  */
 function transform(list: string[]) {
-  const _list: string[] = []
-  list.forEach((word) => {
+  return list.reduce((_list, word) => {
     if (word.length > 0) {
       _list.push(word.toLowerCase())
     }
-  })
-  return _list
+    return _list
+  }, [] as string[])
 }
 
 /**
