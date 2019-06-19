@@ -8,12 +8,9 @@ Includes a default list of ~86,000 english words.
 
 Additional dictionary/wordlist paths can be configured via the [options](#options). System dictionaries exist at locations such as `/usr/share/dict/words`, `/usr/share/dict/british-english`, etc.
 
-```bash
-npm install @neopass/wordlist
-```
-
 ## Contents
 
+- [Installation](#installation)
 - [Usage](#usage)
 - [Options](#options)
   - [Specify Alternate Word Lists](#specify-alternate-word-lists)
@@ -25,6 +22,12 @@ npm install @neopass/wordlist
   - [Exclusions](#exclusions)
   - [Using the Custom List](#using-the-custom-list)
 - [SCOWL License](#scowl-license)
+
+## Installation
+
+```bash
+npm install @neopass/wordlist
+```
 
 ## Usage
 
@@ -90,14 +93,18 @@ export interface IListOptions {
 `combine`: Allows multiple lists to be [combined](#combine-lists) into one.
 
 `mutator`: mutates the list depending on the value provided.
-- `only-lower`: Filter out words that are not comprised of only characters `[a-z]`.
+- `only-lower`: Filter out words that are not strictly comprised of characters `[a-z]`.
 - `to-lower`: Convert words to lower case.
-- `Mutator`: `(word: string) => string|string[]|void`: a custom function that receives a word and returns one or more words, or `undefined`. Used for custom transformation/exclusion of words in the list. Return values:
+- `Mutator`: `(word: string) => string|string[]|void`: a custom function that receives a word and returns one or more words, or `undefined`. Used for custom transformation/exclusion of words in the list.
+
+Return values:
   - `string`: the returned `string` is added to the list.
   - `string[]`: all returned `string`s are added to the list.
-  - `undefined`: the word is not added.
+  - For any other return value the word is not added.
 
 ```javascript
+const { wordList } = require('@neopass/wordlist')
+
 /**
  * Create a custom mutator for splitting hyphenated words
  * and converting them to lower case.
@@ -200,6 +207,14 @@ export const defaultOptions: IListOptions = {
 }
 ```
 
+```javascript
+/**
+ * We don't need to specify a config because the `$default` alias
+ * is part of the default configuration.
+ */
+const list = wordListSync()
+```
+
 The `$default` alias (along with [other aliases](#scowl-aliases)) resolves to a path at run time.
 
 ## Generate a List From Scowl Sources
@@ -230,13 +245,19 @@ builder(word => set.add(word))
   .then(() => console.log(set.size)) // 49130
 ```
 
+**Warning:** Some SCOWL sources contain words not approprate for all audiences, including swear words, racial slurs, and words of a sexual nature. You'll most likely want to scrutinize these sources depending on your use case and intended audience.
+
+SCOWL is primarily intened as a source for spell checkers. From the [SCOWL](http://wordlist.aspell.net) website:
+
+> SCOWL (Spell Checker Oriented Word Lists) and Friends is a database of information on English words useful for creating high-quality word lists suitable for use in spell checkers of most dialects of English. The database primary contains information on how common a word is, differences in spelling between the dialects if English, spelling variant information, and (basic) part-of-speech and inflection information.
+
 **Note:** SCOWL sources contain some words with apostrophes `'s` and also unicode characters. Care should be taken to deal with these depending on your needs. For example, we can transform words to remove any trailing `'s` characters and then only accept words that contain the letters a-z:
 
 ```javascript
 const { listBuilder } = require('@neopass/wordlist')
 
 /**
- * Remove trailig `'s` from words.
+ * Remove trailing `'s` from words.
  */
 function transform(word) {
   if (word.endsWith(`'s`)) {
@@ -249,7 +270,7 @@ function transform(word) {
  * Determine if a word should be added.
  */
 function accept(word) {
-  // Only accept words with characters a-z.
+  // Only accept words with characters a-z (case insensitive).
   return (/^[a-z]+$/i).test(word)
 }
 
@@ -283,7 +304,7 @@ _builder.then(() => console.log(set.size)) // 38714
 
 ### Scowl Aliases
 
-A path alias is defined for every [SCOWL source list](https://github.com/neopass/wordlist/blob/master/scowl/words). SCOWL aliases consist of the `$` character followed by the [source file name](https://github.com/neopass/wordlist/blob/master/scowl/words). The below is a representative sample of the available source aliases.
+A path alias is defined for every [SCOWL source list](https://github.com/neopass/wordlist/blob/master/scowl/words). SCOWL aliases consist of the `$` character followed by the [source file name](https://github.com/neopass/wordlist/blob/master/scowl/words). The below is a _representative sample_ of the available source aliases.
 
 ```
 $american-abbreviations.70
@@ -411,7 +432,7 @@ See the [SCOWL Readme](https://github.com/neopass/wordlist/blob/master/scowl/REA
 
 ## Create a Custom Word List File
 
-A custom word list from other sources can be assmbled with the `wordlist-gen` binary, or the `word-gen` utility in the [wordlist repo](https://github.com/neopass/wordlist).
+A custom word list file from miscellaneous sources can be assembled with the `wordlist-gen` binary, or the `word-gen` utility in the [wordlist repo](https://github.com/neopass/wordlist).
 
 From the `@neopass/wordlist` package:
 
@@ -436,19 +457,19 @@ First, set up a directory of book and/or word list files, for example:
 root
   +-- data
     +-- books
-    | +-- modern steam engine design.txt
-    | +-- how to skin a rabbit.txt
+    | -- modern steam engine design.txt
+    | -- how to skin a rabbit.txt
     +-- lists
-    | +-- names.txt
-    | +-- animals.txt
-    | +-- slang.txt
+    | -- names.txt
+    | -- animals.txt
+    | -- slang.txt
     +-- scowl
-    | +-- english-words.10
-    | +-- english-words.20
-    | +-- english-words.35
-    | +-- special-hacker.50
+    | -- english-words.10
+    | -- english-words.20
+    | -- english-words.35
+    | -- special-hacker.50
     +-- exclusions
-    | +-- patterns.txt
+    | -- patterns.txt
 ```
 
 The structure doesn't really matter. The format should be `utf-8` text, and can consist of one or more words per line. `exclusions` is optional.
@@ -492,7 +513,6 @@ Use `path.resolve` or `path.join` to create an absolute path to your custom word
 const path = require('path')
 const { wordList } = require('@neopass/wordlist')
 
-// Prefer british-english list.
 const options = {
   paths: [
     // Use a path relative to the location of this module.
